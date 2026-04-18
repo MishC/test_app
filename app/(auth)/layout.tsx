@@ -14,7 +14,7 @@ type Props = {
 
 export default function AuthLayout({ children }: Props) {
   return (
-    <div className={`flex min-h-svh`}>
+    <div className={`flex min-h-svh bg-zinc-50 font-sans dark:bg-black ${geistSans.variable} ${inter.variable}`}>
     
       <div className="fixed inset-y-0 left-0 w-64 max-lg:hidden"> <Sidebar /> </div>
         <main className="flex w-full pb-2 lg:pl-64 lg:pr-4 lg:pt-2">
