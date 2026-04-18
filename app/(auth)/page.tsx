@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex  bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex font-sans dark:bg-black">
       <div>
         <p className="py-5"> This is a home page.</p>
 
