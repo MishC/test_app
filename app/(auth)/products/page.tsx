@@ -1,4 +1,5 @@
-export const metadata = {
+import type { Metadata } from "next";
+export const metadata: Metadata = {
     title: "Products",
     description: "This is the products page."
 }
