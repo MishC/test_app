@@ -1,50 +1,22 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import Link from "next/link";
 
 export default function Home() {
-
-
-const items = [
-  {
-    value: "item-1",
-    trigger: "How do I reset my password?",
-    content:
-      "Click on 'Forgot Password' on the login page, enter your email address, and we'll send you a link to reset your password. The link will expire in 24 hours.",
-  },
-  {
-    value: "item-2",
-    trigger: "Can I change my subscription plan?",
-    content:
-      "Yes, you can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle.",
-  },
-  {
-    value: "item-3",
-    trigger: "What payment methods do you accept?",
-    content:
-      "We accept all major credit cards, PayPal, and bank transfers. All payments are processed securely through our payment partners.",
-  },
-]
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-    <Accordion
-      type="single"
-      collapsible
-      defaultValue="item-1"
-      className="max-w-lg"
-    >
-      {items.map((item) => (
-        <AccordionItem key={item.value} value={item.value}>
-          <AccordionTrigger>{item.trigger}</AccordionTrigger>
-          <AccordionContent>{item.content}</AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
-  
+    <div className="flex  bg-zinc-50 font-sans dark:bg-black">
+      <div>
+        <p className="py-5"> This is a home page.</p>
+
+        <div>
+          <Link
+            href="/products"
+            className="max-w-1 w-1 rounded-lg
+             bg-white px-4 py-2 text-sm font-medium text-zinc-950 shadow-sm ring-1 ring-zinc-950/10 hover:bg-zinc-50 
+             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950/10"
+          >
+            View Products
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
