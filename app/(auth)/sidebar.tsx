@@ -8,10 +8,13 @@ import {
   Library,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils";
 
+
 export function Sidebar() {
+    const pathname = usePathname();
   const links = [
     {
       label: "Dashboard",
@@ -54,7 +57,8 @@ export function Sidebar() {
           <Link
             key={link.href}
             href={link.href}
-            className={cn(buttonVariants({ variant: "default", size: "sm" }), "justify-start")}
+            className={cn(buttonVariants({ variant: pathname === link.href ? "default" : "ghost" }), "justify-start",
+        pathname!== link.href && "hover:bg-zinc-200")}
           >
             <link.icon className="size-4 mr-2" />
             <span>{link.label}</span>
