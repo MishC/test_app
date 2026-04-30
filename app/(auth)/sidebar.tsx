@@ -78,7 +78,7 @@ export function Sidebar() {
                     <div className="flex justify-between items-center">
                         <div className="flex gap-3 items-center">
                             <Avatar>
-                                <AvatarImage src="https://avatars.githubusercontent.com/u/5074489?s=400&u=1c8e5b0a7c3d2e4f1a9b8c9e5d6f7a8b9c0d1e&v=3" />
+                                <AvatarImage src="https://avatars.githubusercontent.com/u/5074489?s=400&u=1c8e5b0a7c3d2e4f1a9b8c9e5d6f7a8b9c0d1e&v=4" />
                             </Avatar>
                             <div className="flex flex-col item-start-w-[150px] justif-start truncate">
                                 <p className="text-sm font-medium  text-zinc-950">Full Name</p>
