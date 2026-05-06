@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Sidebar } from "./sidebar";
+import { auth } from "@clerk/nextjs/server";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -15,7 +16,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function AuthLayout({ children }: Props) {
+export default async function AuthLayout({ children }: Props) {
+  await auth.protect();
   return (
     <div
       className={`flex min-h-svh bg-zinc-50 dark:bg-black ${geistSans.variable} ${geistMono.variable}`}
