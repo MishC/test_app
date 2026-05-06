@@ -96,7 +96,7 @@ export function Sidebar() {
 
                 
                    
-                    <Link href="/logout" className=" hover:bg-zinc-100 rounded-sm"> 
+                    <Link href="/sign-in" className=" hover:bg-zinc-100 rounded-sm"> 
                     <DropdownMenuItem>Logout</DropdownMenuItem></Link>
                 </DropdownMenuContent>
             </DropdownMenu>
