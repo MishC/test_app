@@ -17,6 +17,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/ui/sign-out-button";
 
 
 export function Sidebar() {
@@ -97,7 +98,7 @@ export function Sidebar() {
                 
                    
                     <Link href="/sign-in" className=" hover:bg-zinc-100 rounded-sm"> 
-                    <DropdownMenuItem>Logout</DropdownMenuItem></Link>
+                    <DropdownMenuItem>{SignOutButton("Logout")}</DropdownMenuItem></Link>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
