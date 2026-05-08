@@ -24,10 +24,12 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/nextjs";
+import { api } from "@/convex/_generated/api";  
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useUser();
+ 
   const links = [
     {
       label: "Dashboard",
