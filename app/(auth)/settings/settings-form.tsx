@@ -1,4 +1,4 @@
-"use client";
+"use client";   // This file is a client component because it uses React hooks and form state.
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
