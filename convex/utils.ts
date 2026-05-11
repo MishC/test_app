@@ -8,6 +8,7 @@ async function getUserId(ctx: {auth:Auth}) {
  const authInfo = await ctx.auth.getUserIdentity();
  return authInfo?.subject;
     }
+// Helper function to get the current user based on the auth context
 export const queryWithUser=customQuery(
     query,
     customCtx(async (ctx) => {
