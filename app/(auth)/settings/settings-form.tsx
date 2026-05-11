@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Settings } from "lucide-react";
+import { Doc } from "@/convex/_generated/dataModel";
 
 const settingsFormSchema = z.object({
   username: z.string().min(3, {
@@ -20,8 +21,11 @@ const settingsFormSchema = z.object({
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
+type Props = {
+  user: Doc<'users'>;
+  };
 
-export function SettingsForm() {
+export function SettingsForm( {user}:Props) {
   const {
     register,
     handleSubmit,
@@ -29,9 +33,7 @@ export function SettingsForm() {
   } = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
-      username: "",
-      name: "",
-      about: "",
+     ...user,
     },
     mode: "onChange",
   });

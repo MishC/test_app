@@ -1,9 +1,14 @@
 import { internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 import { generateUsername } from "friendly-username-generator";
-import { queryWithUser } from "./utils";
+import { getUserByClerkId, queryWithUser } from "./utils";
 
-
+export const getUser = queryWithUser({
+  args: {},
+  handler: (ctx) => { 
+    return getUserByClerkId(ctx.db, ctx.userId!);
+  }
+});
 export const createUser = internalMutation({
   args: {
     clerkId: v.string(),
