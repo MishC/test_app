@@ -5,7 +5,7 @@ import { ConvexError, v } from "convex/values";
 import { get } from "http";
 
 async function getUserId(ctx: {auth:Auth}) {
- const authInfo = await ctx.auth.getUserIdentity();
+ const authInfo = await ctx.auth.getUserIdentity(); //here is the token->user id from the token!!
  return authInfo?.subject;
     }
 // Helper function to get the current user based on the auth context

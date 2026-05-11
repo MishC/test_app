@@ -1,10 +1,17 @@
 `bun run dev`
 will run frontend and backend on this Next JS app
 
-Convex: db (schema.ts), API to get/send/update/delete via query, mutation, actions:runmutation with 3rd part service
+# Convex API backend functions/HOOKS:
+db: schema.ts
+Query: customQuery({args:{}, handler:async(ctx, args)=>{}})
+Mutations: internalMutation({args:{}, handler:async(ctx, args)=>{await ctx.db.insert("table", {});}})
 
-Clerk: authentication
+# Clerk: authentication
+## Clerk backend
 
-Clerk&Convex sync via Clerk's webhooks with events
+# Clerk&Convex sync via Clerk's webhooks with events
 
 Links:
+
+
+
