@@ -53,6 +53,20 @@ export const updateUser = mutationWithUser({
       throw new ConvexError("User not found");
     }
     await ctx.db.patch(user._id, { name, about, username }); //update the user with the new values
-  }     
-});
-
+  }  
+}); 
+  
+  export const updateUserLogo= mutationWithUser({
+    args: {
+      userId: v.id('users'),
+      logo: v.string()
+    },
+    handler: async (ctx, { userId, logo }) => 
+      {
+      const user = await getUserByClerkId(ctx.db, ctx.userId!);
+      if (!user) {
+        throw new ConvexError("User not found");
+      }
+      await ctx.db.patch(userId, { logo });
+    }
+  });

@@ -8,6 +8,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast  from "react-hot-toast";
 import { ConvexError } from "convex/values";
+import SettingsLogo from "./settings-logo";
 
 //Data input error handling
 const settingsFormSchema = z.object({
@@ -128,7 +129,7 @@ export function SettingsForm({ user }: Props) {
           <p className="text-sm text-red-500">{errors.about.message}</p>
         )}
       </div>
-
+      <SettingsLogo user={user} />
       <button
         type="submit"
         disabled={isSubmitting}
