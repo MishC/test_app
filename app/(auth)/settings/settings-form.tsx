@@ -38,9 +38,10 @@ export function SettingsForm({ user }: Props) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<SettingsFormValues>({
-    resolver: zodResolver(settingsFormSchema),
+    resolver: zodResolver(settingsFormSchema),//const form = useForm();
     defaultValues: {
       username: user.username ?? "",
       name: user.name ?? "",
@@ -63,8 +64,12 @@ export function SettingsForm({ user }: Props) {
 } catch (error) {
   const message= error instanceof ConvexError ? error.data:"";
   console.log(message);
-  if (message === "USERNAME_TAKEN") {
-    toast.error(`Username \"${values.username}\" is already taken. Please choose another one.`);
+   if (message === "USERNAME_TAKEN") {
+      setError("username", {
+        type: "manual",
+        message: "Username already taken. Please choose another one.",
+      });
+
   } else {
     toast.error("Failed to update settings");
   }
