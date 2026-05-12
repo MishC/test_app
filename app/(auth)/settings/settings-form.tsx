@@ -7,7 +7,9 @@ import { Doc } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast  from "react-hot-toast";
+import { ConvexError } from "convex/values";
 
+//Data input error handling
 const settingsFormSchema = z.object({
   username: z.string().min(3, {
     message: "Username must be at least 3 characters",
@@ -49,6 +51,7 @@ export function SettingsForm({ user }: Props) {
 
 
   async function onSubmit(values: SettingsFormValues) {
+    try {
   await updateUser({
     username: values.username,
     about: values.about,
@@ -57,8 +60,16 @@ export function SettingsForm({ user }: Props) {
   });
 
   toast.success("Settings updated");
+} catch (error) {
+  const message= error instanceof ConvexError ? error.data:"";
+  console.log(message);
+  if (message === "USERNAME_TAKEN") {
+    toast.error(`Username \"${values.username}\" is already taken. Please choose another one.`);
+  } else {
+    toast.error("Failed to update settings");
+  }
+  }
 }
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-xl">

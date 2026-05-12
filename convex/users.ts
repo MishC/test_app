@@ -42,7 +42,7 @@ export const updateUser = mutationWithUser({
   // email and cler_id are indexes in user table, so we can easily check if 
   // the new username is already taken by another user, by querying the users table with the by_email index and filtering out the current user with the clerkId from the auth context
   handler: async (ctx, {  userId,name, about, username }) => {
-    const isUsernameTaken = await ctx.db.query("users").withIndex('by_email', q=> q.eq("email", username!)).
+    const isUsernameTaken = await ctx.db.query("users").withIndex('by_username', q=> q.eq("username", username!)).
     filter(q=>q.neq(q.field('clerkId'), ctx.userId!)).first();
     if (isUsernameTaken) {
       throw new ConvexError("USERNAME_TAKEN");

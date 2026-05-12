@@ -12,7 +12,7 @@ export default defineSchema({
     about: v.optional(v.string()),
     logo: v.optional(v.string()),
 
-  }).index("by_clerkId", ["clerkId"],).index("by_email", ["email"]),
+  }).index("by_clerkId", ["clerkId"],).index("by_email", ["email"]).index("by_username", ["username"]),
   products: defineTable({
     clerkId: v.string(),
     name: v.string(),
