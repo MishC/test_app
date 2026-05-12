@@ -4,6 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Settings } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import toast  from "react-hot-toast";
 
 const settingsFormSchema = z.object({
   username: z.string().min(3, {
@@ -20,12 +23,16 @@ const settingsFormSchema = z.object({
     .optional(),
 });
 
+
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 type Props = {
   user: Doc<'users'>;
   };
+  
 
-export function SettingsForm( {user}:Props) {
+export function SettingsForm({ user }: Props) {
+  const updateUser = useMutation(api.users.updateUser);
+
   const {
     register,
     handleSubmit,
@@ -33,14 +40,25 @@ export function SettingsForm( {user}:Props) {
   } = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
-     ...user,
+      username: user.username ?? "",
+      name: user.name ?? "",
+      about: user.about ?? "",
     },
     mode: "onChange",
   });
 
-  function onSubmit(values: SettingsFormValues) {
-    console.log("Settings updated:", values);
-  }
+
+  async function onSubmit(values: SettingsFormValues) {
+  await updateUser({
+    username: values.username,
+    about: values.about,
+    name: values.name,
+    userId: user._id,
+  });
+
+  toast.success("Settings updated");
+}
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-xl">
@@ -64,6 +82,7 @@ export function SettingsForm( {user}:Props) {
         )}
       </div>
 
+    
       <div className="space-y-2">
         <label htmlFor="name" className="block text-sm font-medium">
           Name
