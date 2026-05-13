@@ -46,7 +46,7 @@ export function NewProductForm() {
     mode: "onChange",
   });
 
- const onSubmit: SubmitHandler<SettingsKeyFormValues> = async (values, event) => {
+ const onSubmit: SubmitHandler<NewProductFormValues> = async (values, event) => {
   event?.stopPropagation();
 
  
