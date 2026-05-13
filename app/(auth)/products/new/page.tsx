@@ -1,7 +1,7 @@
 import { ContentLayout } from "../../content-layout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { NewProductForm } from "./new-product-form";
+import { NewProductForm, ProductForm } from "./new-product-form";
 
 export default function NewProductPage() {
   return (
@@ -16,9 +16,9 @@ export default function NewProductPage() {
     >
       <div>
         {" "}
-        <p>
-          <NewProductForm />
-        </p>
+     
+          <ProductForm />
+        
       </div>
     </ContentLayout>
   );
