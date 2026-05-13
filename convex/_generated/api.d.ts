@@ -11,6 +11,7 @@
 import type * as clerk from "../clerk.js";
 import type * as http from "../http.js";
 import type * as keys from "../keys.js";
+import type * as products from "../products.js";
 import type * as storage from "../storage.js";
 import type * as users from "../users.js";
 import type * as utils from "../utils.js";
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   clerk: typeof clerk;
   http: typeof http;
   keys: typeof keys;
+  products: typeof products;
   storage: typeof storage;
   users: typeof users;
   utils: typeof utils;
