@@ -112,7 +112,7 @@ export function SettingsKey({ stripeSecretKey }: Props) {
                 Save changes
               </Button>
             </DialogFooter>
-\      </DialogContent>
+   </DialogContent>
     </Dialog>
   );
 }
