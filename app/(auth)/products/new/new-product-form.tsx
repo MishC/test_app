@@ -22,7 +22,7 @@ const productSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
-  price: z.coerce.number().min(0, {
+  price: z.number().min(0, {
     message: "Price must be a positive number",
   }),
   description: z.string(),
