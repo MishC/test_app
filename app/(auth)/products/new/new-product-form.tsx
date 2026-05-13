@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { use } from "react";
+import { useUploadFile } from "@/lib/useUplodFile";
 
 const newProductSchema = z.object({
   name: z.string().min(1, {
@@ -35,11 +37,8 @@ export function NewProductForm() {
   const form = useForm<NewProductFormValues>({
     resolver: zodResolver(newProductSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
+    
       coverImage: "",
-      content: "",
       published: false,
     },
     mode: "onChange",
@@ -54,29 +53,33 @@ export function NewProductForm() {
     toast.success("Product created successfully");
     router.refresh();
   };
+
+  const uploadFile= useUploadFile();
   return (
     <div className="product-form">
-      <form onSubmit={form.handleSubmit(onSubmit)} className="my-10">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
         <Controller
-          name="name"
+          name="coverImage"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Cover Image</FieldLabel>
 
               <Input
-                {...field}
+                type="file"
                 id={field.name}
-                placeholder={"Product name"}
-                autoComplete="off"
-                aria-invalid={fieldState.invalid}
-                className="not-visited:"
+                accept="image/*"
+                onChange={(e) => {uploadFile(e.target.files?.[0]!).then((url) => {
+                  field.onChange(url);
+                })  }}
               />
 
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />} 
+              {field.value && <img src={field.value} alt="Cover Image" className="w-28 h-28 object-cover rounded-md" />}
             </Field>
           )}
         />
+       
       </form>
     </div>
   );
