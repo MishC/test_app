@@ -11,6 +11,7 @@
     "dev:backend": "convex dev"
   },
   "dependencies": {
+    "@base-ui/react": "^1.4.1",
     "@clerk/nextjs": "^7.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@tiptap/extension-highlight": "^3.23.4",
