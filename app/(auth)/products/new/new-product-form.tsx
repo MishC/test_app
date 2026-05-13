@@ -5,6 +5,8 @@ import { api
 import { useMutation } from "convex/react";
 
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
 import { z } from "zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,10 +49,14 @@ export function ProductForm() {
     mode: "onChange",
   });
 
+    const router = useRouter();
+
   const onSubmit: SubmitHandler<ProductFormValues> = async (values:ProductFormValues) => {
     await createProduct({...values});
     toast.success("Product created");
+    router.refresh();
   };
+
   return (
     <div className="w-full max-w-6xl">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
