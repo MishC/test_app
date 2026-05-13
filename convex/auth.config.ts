@@ -1,6 +1,6 @@
-//Convex server config: Convex verifies Clerk JWT token.
+//Convex server config: 
+//Convex validates Clerk JWT token 
 import { AuthConfig } from "convex/server";
-
 export default {
   providers: [
     {
