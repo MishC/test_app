@@ -49,7 +49,7 @@ const settingsKeySchema = z.object({
 type SettingsKeyFormValues = z.infer<typeof settingsKeySchema>;
 
 export function SettingsKey({ stripeSecretKey, isOpen, setOpen }: Props) {
-const createStripeSecretKey = useMutation(api.keys.createStripeSecretKey);
+const createStripeSecretKeyMutation = useMutation(api.keys.createStripeSecretKey);
  const router = useRouter();
     
   const form = useForm<SettingsKeyFormValues>({
@@ -63,7 +63,7 @@ const createStripeSecretKey = useMutation(api.keys.createStripeSecretKey);
 const onSubmit: SubmitHandler<SettingsKeyFormValues> = async (values, event) => {
   event?.stopPropagation();
 
-  await createStripeSecretKey({
+  await createStripeSecretKeyMutation({
     stripeKey: values.stripeKey,
   });
 
