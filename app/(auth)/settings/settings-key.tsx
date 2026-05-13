@@ -25,11 +25,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 
-
+import type { SubmitHandler } from "react-hook-form";
 import { CheckIcon, KeyIcon } from "lucide-react";
 
 import { Doc } from "@/convex/_generated/dataModel";
-import { createStripeSecretKey } from "@/convex/keys";
 import { toast } from "react-hot-toast/headless";
 import { api } from "@/convex/_generated/api";
 
@@ -61,13 +60,17 @@ const createStripeSecretKey = useMutation(api.keys.createStripeSecretKey);
     mode: "onChange",
   });
 
-  async function onSubmit(values: SettingsKeyFormValues, event:React.SyntheticEvent<HTMLFormElement>) {
-    event.stopPropagation();
-    await createStripeSecretKey({ stripeKey: values.stripeKey });
-    toast.success("Stripe secret key saved successfully");
-    setOpen(false);
-    router.refresh();
-  }
+const onSubmit: SubmitHandler<SettingsKeyFormValues> = async (values, event) => {
+  event?.stopPropagation();
+
+  await createStripeSecretKey({
+    stripeKey: values.stripeKey,
+  });
+
+  toast.success("Stripe secret key saved successfully");
+  setOpen(false);
+  router.refresh();
+};
 
   
   return (
