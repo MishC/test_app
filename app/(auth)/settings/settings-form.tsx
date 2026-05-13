@@ -9,6 +9,7 @@ import { api } from "@/convex/_generated/api";
 import toast  from "react-hot-toast";
 import { ConvexError } from "convex/values";
 import SettingsLogo from "./settings-logo";
+import { SettingsKey } from "./settings-key";
 
 //Data input error handling
 const settingsFormSchema = z.object({
@@ -78,6 +79,7 @@ export function SettingsForm({ user }: Props) {
 }
 
   return (
+    <>
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-xl">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5" />
@@ -138,5 +140,7 @@ export function SettingsForm({ user }: Props) {
         Update Settings
       </button>
     </form>
+    <SettingsKey/>
+    </>
   );
 }
