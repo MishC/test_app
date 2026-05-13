@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { ConvexError } from "convex/values";
 import SettingsLogo from "./settings-logo";
 import { SettingsKey } from "./settings-key";
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth } from "convex/react"; //read clerk.md
 
 //Data input error handling
 const settingsFormSchema = z.object({
