@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 import { Controller, createFormControl } from "react-hook-form";
-import {SubmitHandler} from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
 import {
   Field,
   FieldLabel,
@@ -31,8 +31,7 @@ const newProductSchema = z.object({
 type NewProductFormValues = z.infer<typeof newProductSchema>;
 
 export function NewProductForm() {
-
-  const router=useRouter();
+  const router = useRouter();
   const form = useForm<NewProductFormValues>({
     resolver: zodResolver(newProductSchema),
     defaultValues: {
@@ -46,14 +45,15 @@ export function NewProductForm() {
     mode: "onChange",
   });
 
- const onSubmit: SubmitHandler<NewProductFormValues> = async (values, event) => {
-  event?.stopPropagation();
+  const onSubmit: SubmitHandler<NewProductFormValues> = async (
+    values,
+    event,
+  ) => {
+    event?.stopPropagation();
 
- 
-
-  toast.success("Stripe secret key saved successfully");
-  router.refresh();
-};
+    toast.success("Product created successfully");
+    router.refresh();
+  };
   return (
     <div className="product-form">
       <h1>New Product</h1>
