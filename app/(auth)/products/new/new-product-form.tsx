@@ -54,6 +54,8 @@ export function ProductForm() {
   const onSubmit: SubmitHandler<ProductFormValues> = async (values:ProductFormValues) => {
     await createProduct({...values});
     toast.success("Product created");
+    toast.dismiss();
+    router.push("/products")
     router.refresh();
   };
 
