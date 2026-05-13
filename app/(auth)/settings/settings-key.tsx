@@ -89,7 +89,7 @@ export function SettingsKey({ stripeSecretKey }: Props) {
       <Input
         {...field}
         id={field.name}
-        placeholder="sk_test_..."
+        placeholder={stripeSecretKey ? "Update your Stripe secret key" : "Enter your Stripe secret key"}
         autoComplete="off"
         aria-invalid={fieldState.invalid}
       />
