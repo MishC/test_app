@@ -13,6 +13,12 @@
   "dependencies": {
     "@clerk/nextjs": "^7.3.0",
     "@hookform/resolvers": "^5.2.2",
+    "@tiptap/extension-highlight": "^3.23.4",
+    "@tiptap/extension-typography": "^3.23.4",
+    "@tiptap/extension-youtube": "^3.23.4",
+    "@tiptap/pm": "^3.23.4",
+    "@tiptap/react": "^3.23.4",
+    "@tiptap/starter-kit": "^3.23.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.37.0",
