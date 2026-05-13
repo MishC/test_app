@@ -1,7 +1,7 @@
 import { ContentLayout } from "../../content-layout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { NewProductForm, ProductForm } from "./new-product-form";
+import { ProductForm } from "./new-product-form";
 
 export default function NewProductPage() {
   return (
