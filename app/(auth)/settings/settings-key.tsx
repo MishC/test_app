@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { useMutation } from "convex/react";
 import {
   Dialog,
   DialogClose,
@@ -31,6 +31,7 @@ import { CheckIcon, KeyIcon } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
 import { createStripeSecretKey } from "@/convex/keys";
 import { toast } from "react-hot-toast/headless";
+import { api } from "@/convex/_generated/api";
 
 type Props = {
   stripeSecretKey: Doc<"keys"> | undefined | null;
@@ -49,7 +50,8 @@ const settingsKeySchema = z.object({
 type SettingsKeyFormValues = z.infer<typeof settingsKeySchema>;
 
 export function SettingsKey({ stripeSecretKey, isOpen, setOpen }: Props) {
-      const router = useRouter();
+const createStripeSecretKey = useMutation(api.keys.createStripeSecretKey);
+ const router = useRouter();
     
   const form = useForm<SettingsKeyFormValues>({
     resolver: zodResolver(settingsKeySchema),
@@ -89,6 +91,7 @@ export function SettingsKey({ stripeSecretKey, isOpen, setOpen }: Props) {
             Add your Stripe secret here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
+ <form onSubmit={form.handleSubmit(onSubmit)} >
 
       <Controller
   name="stripeKey"
@@ -109,7 +112,7 @@ export function SettingsKey({ stripeSecretKey, isOpen, setOpen }: Props) {
         <FieldError errors={[fieldState.error]} />
       )}
     </Field>
-  )}
+  )}    
 />
 
             <DialogFooter className="mt-4">
@@ -123,6 +126,7 @@ export function SettingsKey({ stripeSecretKey, isOpen, setOpen }: Props) {
                 Save changes
               </Button>
             </DialogFooter>
+            </form>
    </DialogContent>
     </Dialog>
   );
