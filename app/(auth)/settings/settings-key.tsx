@@ -13,7 +13,7 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function DialogDemo() {
+export function SettingsKey() {
   return (
     <Dialog>
       <form>
