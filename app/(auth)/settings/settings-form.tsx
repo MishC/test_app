@@ -11,6 +11,7 @@ import { ConvexError } from "convex/values";
 import SettingsLogo from "./settings-logo";
 import { SettingsKey } from "./settings-key";
 import { useConvexAuth } from "convex/react"; //read clerk.md
+import { useState } from "react";
 
 //Data input error handling
 const settingsFormSchema = z.object({
@@ -36,8 +37,14 @@ type Props = {
 type stripeSecretKey = Doc<"keys">;
 
 export function SettingsForm({ user }: Props) {
+  
+  //state
+  const [isOpen, setOpen] = useState(false);
+  
   const updateUser = useMutation(api.users.updateUser);
   const { isAuthenticated } = useConvexAuth();
+
+
 
   const stripeSecretKey = useQuery(
     api.keys.getStripeSecretKey,
@@ -147,7 +154,7 @@ export function SettingsForm({ user }: Props) {
           Update Settings
         </button>
       </form>
-      <SettingsKey stripeSecretKey={stripeSecretKey} />
+      <SettingsKey stripeSecretKey={stripeSecretKey} isOpen={isOpen} setOpen={setOpen} />
     </>
   );
 }

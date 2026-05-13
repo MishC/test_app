@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -29,9 +29,13 @@ import {
 import { CheckIcon, KeyIcon } from "lucide-react";
 
 import { Doc } from "@/convex/_generated/dataModel";
+import { createStripeSecretKey } from "@/convex/keys";
+import { toast } from "react-hot-toast/headless";
 
 type Props = {
   stripeSecretKey: Doc<"keys"> | undefined | null;
+    isOpen: boolean;
+    setOpen: (open: boolean) => void;
 };
 
 const settingsKeySchema = z.object({
@@ -44,7 +48,9 @@ const settingsKeySchema = z.object({
 
 type SettingsKeyFormValues = z.infer<typeof settingsKeySchema>;
 
-export function SettingsKey({ stripeSecretKey }: Props) {
+export function SettingsKey({ stripeSecretKey, isOpen, setOpen }: Props) {
+      const router = useRouter();
+    
   const form = useForm<SettingsKeyFormValues>({
     resolver: zodResolver(settingsKeySchema),
     defaultValues: {
@@ -53,12 +59,17 @@ export function SettingsKey({ stripeSecretKey }: Props) {
     mode: "onChange",
   });
 
-  function onSubmit(values: SettingsKeyFormValues) {
-    console.log(values);
+  async function onSubmit(values: SettingsKeyFormValues, event:React.SyntheticEvent<HTMLFormElement>) {
+    event.stopPropagation();
+    await createStripeSecretKey({ stripeKey: values.stripeKey });
+    toast.success("Stripe secret key saved successfully");
+    setOpen(false);
+    router.refresh();
   }
 
+  
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
           {stripeSecretKey ? (
