@@ -3,6 +3,16 @@ import {customAction, customCtx,  customMutation, customQuery} from "convex-help
 import { action, DatabaseReader, mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 
+export async function getUserIdOrNull(ctx: { auth: Auth }) {
+  const authInfo = await ctx.auth.getUserIdentity();
+
+  if (!authInfo?.subject) {
+    return null;
+  }
+
+  return authInfo.subject;
+}
+
 async function getUserId(ctx: {auth:Auth}) {
  const authInfo = await ctx.auth.getUserIdentity(); //here is the token->user id from the token!!
   if (!authInfo?.subject) {

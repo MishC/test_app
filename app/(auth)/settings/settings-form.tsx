@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Settings } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast  from "react-hot-toast";
 import { ConvexError } from "convex/values";
@@ -33,10 +33,11 @@ type Props = {
   user: Doc<'users'>;
   };
   
+type   stripeSecretKey=Doc<'keys'>;
 
 export function SettingsForm({ user }: Props) {
   const updateUser = useMutation(api.users.updateUser);
-
+  const stripeSecretKey=useQuery(api.keys.getStripeSecretKey);
   const {
     register,
     handleSubmit,
@@ -52,7 +53,7 @@ export function SettingsForm({ user }: Props) {
     mode: "onChange",
   });
 
-
+  
   async function onSubmit(values: SettingsFormValues) {
     try {
   await updateUser({
@@ -140,7 +141,7 @@ export function SettingsForm({ user }: Props) {
         Update Settings
       </button>
     </form>
-    <SettingsKey/>
+    <SettingsKey stripeSecretKey={stripeSecretKey} />
     </>
   );
 }
