@@ -56,8 +56,7 @@ export function NewProductForm() {
   };
   return (
     <div className="product-form">
-      <h1>New Product</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="my-10">
         <Controller
           name="name"
           control={form.control}
@@ -71,6 +70,7 @@ export function NewProductForm() {
                 placeholder={"Product name"}
                 autoComplete="off"
                 aria-invalid={fieldState.invalid}
+                className="not-visited:"
               />
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
