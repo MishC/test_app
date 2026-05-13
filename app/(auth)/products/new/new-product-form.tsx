@@ -1,7 +1,6 @@
 "use client";
 
-import { api
- } from "@/convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 
 import toast from "react-hot-toast";
@@ -17,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useUploadFile } from "@/lib/useUplodFile";
+import { ProductContentEditor } from "./product-content-editor";
 
 const productSchema = z.object({
   name: z.string().min(1, {
@@ -35,7 +35,7 @@ type ProductFormValues = z.infer<typeof productSchema>;
 //
 export function ProductForm() {
   const uploadFile = useUploadFile();
-  const createProduct = useMutation(api.products.createProduct) 
+  const createProduct = useMutation(api.products.createProduct);
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -49,13 +49,15 @@ export function ProductForm() {
     mode: "onChange",
   });
 
-    const router = useRouter();
+  const router = useRouter();
 
-  const onSubmit: SubmitHandler<ProductFormValues> = async (values:ProductFormValues) => {
-    await createProduct({...values});
+  const onSubmit: SubmitHandler<ProductFormValues> = async (
+    values: ProductFormValues,
+  ) => {
+    await createProduct({ ...values });
     toast.success("Product created");
     toast.dismiss();
-    router.push("/products")
+    router.push("/products");
     router.refresh();
   };
 
@@ -74,9 +76,9 @@ export function ProductForm() {
                 type="file"
                 accept="image/*"
                 onChange={async (event) => {
-                    const file = event.currentTarget.files?.[0];
+                  const file = event.currentTarget.files?.[0];
 
-                    if (!file) return;  
+                  if (!file) return;
                   const fileUrl = await uploadFile(file);
 
                   field.onChange(fileUrl);
@@ -90,18 +92,18 @@ export function ProductForm() {
                   <div className="flex h-44 items-center justify-center overflow-hidden bg-muted">
                     <img
                       src={field.value}
-                      alt="Cover preview"
+                      alt={`Cover preview`}
                       className="w-full h-36 object-cover border border-dashed rounded-md"
                     />
                   </div>
                   <div className="p-4">
                     <Field>
                       <FieldLabel> Name</FieldLabel>
-                      <Input type="text" value={field.value} readOnly/>
+                      <Input type="text" value={field.value} readOnly />
                     </Field>
 
                     <Field data-invalid={!!form.formState.errors.content}>
-                      <FieldLabel htmlFor="content">
+                      <FieldLabel>
                         About{" "}
                         <span className="font-normal text-muted-foreground">
                           (optional)
@@ -109,10 +111,9 @@ export function ProductForm() {
                       </FieldLabel>
 
                       <Textarea
-                        id="content"
+                        id="about"
                         placeholder="Short description about the image"
                         className="min-h-16"
-                        {...form.register("content")}
                       />
 
                       {form.formState.errors.content && (
@@ -187,6 +188,27 @@ export function ProductForm() {
           )}
         </Field>
 
+        <Controller
+          name="content"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>
+                Content{" "}
+                <span className="font-normal text-muted-foreground">
+                  (optional)
+                </span>
+              </FieldLabel>
+
+              <ProductContentEditor
+                content={field.value}
+                onContentUpdate={field.onChange}
+              />
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
         <Field data-invalid={!!form.formState.errors.published}>
           <label className="flex items-start gap-3">
             <input
