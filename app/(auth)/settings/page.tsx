@@ -3,6 +3,7 @@ import { ContentLayout } from "../content-layout"
 import { SettingsForm } from "./settings-form"
 import { api } from "@/convex/_generated/api"
 import { getAuthToken } from "@/lib/getAuthToken"
+import { Settings } from "lucide-react"
 
 export default async function SettingsPage() {
     const token = await getAuthToken();
@@ -24,7 +25,9 @@ export default async function SettingsPage() {
 
     return (
         <div>
-            <ContentLayout title="Settings" description="Update all of your store information.">
+           
+            <ContentLayout icon={<Settings className="size-6 mt-1"/>}
+            title=" Settings" description="Update all of your store information.">
                 <SettingsForm user={user} />
             </ContentLayout>
         </div>

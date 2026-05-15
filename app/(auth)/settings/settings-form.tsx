@@ -96,10 +96,7 @@ export function SettingsForm({ user }: Props) {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-8 max-w-xl mb-10"
       >
-        <div className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          <h2 className="text-xl font-semibold">Settings</h2>
-        </div>
+      
 
         <div className="space-y-2">
           <label htmlFor="username" className="block text-sm font-medium">
