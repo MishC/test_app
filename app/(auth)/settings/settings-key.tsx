@@ -75,7 +75,7 @@ const onSubmit: SubmitHandler<SettingsKeyFormValues> = async (values, event) => 
   
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="outline">
           {stripeSecretKey ? (
             <CheckIcon className="size-4 mr-2" />
