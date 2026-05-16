@@ -35,7 +35,7 @@ export function ProductContentEditor({
 
     editorProps: {
       attributes: {
-        class: "prose prose-sm max-w-full w-full outline-none",
+        class: "prose prose-sm max-w-full w-full outline-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:rounded-lg",
       },
     },
 

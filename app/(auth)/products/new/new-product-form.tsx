@@ -69,10 +69,10 @@ export function ProductForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Cover Image</FieldLabel>
+              <FieldLabel htmlFor={field?.name}>Cover Image</FieldLabel>
 
               <Input
-                id={field.name}
+                id={field?.name}
                 type="file"
                 accept="image/*"
                 onChange={async (event) => {
@@ -193,18 +193,17 @@ export function ProductForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>
-                Content{" "}
+              <FieldLabel htmlFor={field?.name}>
+                Content
                 <span className="font-normal text-muted-foreground">
                   (optional)
                 </span>
               </FieldLabel>
 
               <ProductContentEditor
-                content={field.value}
-                onContentUpdate={field.onChange}
+                content={field?.value || ""}
+                onContentUpdate={field?.onChange}
               />
-
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
