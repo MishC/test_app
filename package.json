@@ -15,6 +15,7 @@
     "@clerk/nextjs": "^7.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@tiptap/extension-highlight": "^3.23.4",
+    "@tiptap/extension-link": "^3.23.4",
     "@tiptap/extension-typography": "^3.23.4",
     "@tiptap/extension-youtube": "^3.23.4",
     "@tiptap/pm": "^3.23.4",
