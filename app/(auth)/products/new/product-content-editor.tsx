@@ -28,14 +28,13 @@ export function ProductContentEditor({
       }),
     ],
 
-    // tu bolo zle: content: { content }
-    content,
+    content:content,
 
     immediatelyRender: false,
 
     editorProps: {
       attributes: {
-        class: "prose prose-sm max-w-full w-full outline-none [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:rounded-lg",
+        class: `prose prose-sm max-w-none min-h-40 outline-none [&_h1]:text-3xl [&_h1]:font-bold [&_h2]:text-2xl [&_h2]:font-semibold [&_p]:my-2 [&_iframe]:w-full [&_iframe]:h-[320px] [&_iframe]:rounded-lg`
       },
     },
 
