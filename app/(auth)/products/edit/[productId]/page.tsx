@@ -5,12 +5,12 @@ import { ContentLayout } from "../../../content-layout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { EditProductForm } from "./edit-product-form";
-import { redirect } from "next/navigation";
+import { redirect, notFound} from "next/navigation";
 
 type Props = {
-  params: {
+  params: Promise<{
     productId: string;
-  };
+  }>;
 };
 
 export default async function Page({ params }: Props) {
@@ -27,6 +27,11 @@ export default async function Page({ params }: Props) {
     { productId },
     { token }
   );
+
+
+  if (!product) {
+    notFound();
+  }
 
   return (
     <ContentLayout
