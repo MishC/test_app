@@ -26,7 +26,7 @@ export const queryWithUser=customQuery(
     query,
     customCtx(async (ctx) => {
         return{
-   userId: await getUserId(ctx)
+   userId: await getUserId(ctx)  //we get userId from db
         };
     })
 );
