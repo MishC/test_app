@@ -9,7 +9,7 @@ export const getProduct = queryWithUser({
     productId: v.id("products"),
   },
   handler: async (ctx, { productId }) => {
-    const product = await ctx.db.get(productId);
+    const product = await ctx.db.get(productId as Id<'products'>);
 
     if (!product) {
       throw new ConvexError("Product not found");
@@ -22,7 +22,6 @@ export const getProduct = queryWithUser({
     return product;
   },
 });
-
 export const createProduct =   mutationWithUser({
     args:{ name:v.string(),
         description:v.string(),

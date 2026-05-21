@@ -5,17 +5,20 @@ import { ContentLayout } from "../../../content-layout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { EditProductForm } from "./edit-product-form";
-import { redirect, notFound} from "next/navigation";
+import { redirect} from "next/navigation";
+import { Id } from "@/convex/_generated/dataModel";
 
 type Props = {
   params: Promise<{
-    productId: string;
+   productId: Id<"products">;
   }>;
 };
 
 export default async function Page({ params }: Props) {
   const { productId } =  await params;
-
+  if (!productId){
+    return(<div>Product doesn't exist!</div>)
+  }
   const token = await getAuthToken();
 
   if (!token) {
@@ -24,7 +27,7 @@ export default async function Page({ params }: Props) {
 
   const product = await fetchQuery(
     api.products.getProduct,
-    { productId },
+    { productId},
     { token }
   );
 
