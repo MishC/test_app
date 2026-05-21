@@ -20,7 +20,9 @@ type Props = {
 export function ProductContentEditor({ content, onContentUpdate }: Props) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+  link: false,
+}),
       Highlight,
       Typography,
       Youtube.configure({
