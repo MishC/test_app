@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const { productId } = await params;
+  const { productId } =  await params;
 
   const token = await getAuthToken();
 
@@ -38,7 +38,7 @@ export default async function Page({ params }: Props) {
         </Link>
       }
     >
-      {product ? <EditProductForm product={product} /> : null}
+      {product ? <EditProductForm product={product} /> : "Product not found"}
     </ContentLayout>
   );
 }
