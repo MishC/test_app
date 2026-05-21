@@ -5,13 +5,24 @@ import { Id } from "./_generated/dataModel";
 import { ConvexError } from "convex/values";
 
 export const getProduct = queryWithUser({
-    args:{
-        productId:v.string(),
-    },
-    handler:(ctx,{productId})=>{
-        const product= ctx.db.get(productId as Id<'products'>)
+  args: {
+    productId: v.id("products"),
+  },
+  handler: async (ctx, { productId }) => {
+    const product = await ctx.db.get(productId);
+
+    if (!product) {
+      throw new ConvexError("Product not found");
     }
-})
+
+    if (ctx.userId !== product.clerkId) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    return product;
+  },
+});
+
 export const createProduct =   mutationWithUser({
     args:{ name:v.string(),
         description:v.string(),
