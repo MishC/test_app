@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ContentLayout } from "../content-layout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ProductTable } from "./products-table";
 export const metadata: Metadata = {
   title: "Products",
   description: "This is the products page.",
@@ -17,7 +18,7 @@ export default function ProductsPage() {
         </Link>
       }
     >
-      <p>List of products will go here.</p>
+      <ProductTable/>
     </ContentLayout>
   );
 }
