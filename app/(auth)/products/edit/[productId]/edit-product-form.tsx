@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useUploadFile } from "@/lib/useUplodFile";
 import { ProductContentEditor } from "../../new/product-content-editor";
 import { Doc } from "@/convex/_generated/dataModel";
+import { PricingTable } from "@clerk/nextjs";
 
 const productSchema = z.object({
   name: z.string().min(1, {
@@ -39,16 +40,16 @@ type Props={
 //
 export function EditProductForm({product}:Props) {
   const uploadFile = useUploadFile();
-  const createProduct = useMutation(api.products.createProduct);
+  const updateProduct = useMutation(api.products.updateProduct);
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: product?.name,
       price: product?.price,
-      description: "",
-      coverImage: "",
-      content: "",
-      published: true,
+      description: product?.description,
+      coverImage: product?.coverImage,
+      content: product?.content,
+      published: product?.published,
     },
     mode: "onChange",
   });
@@ -58,7 +59,9 @@ export function EditProductForm({product}:Props) {
   const onSubmit: SubmitHandler<ProductFormValues> = async (
     values: ProductFormValues,
   ) => {
-    await createProduct({ ...values });
+    await updateProduct({name:values.name, description:values.description, content:values.content, price:values.price,
+        coverImage:values.coverImage,published:values.published, productId:product._id 
+    } );
     toast.success("Product edited");
     toast.dismiss();
     router.push("/products");

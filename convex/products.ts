@@ -2,6 +2,7 @@ import {mutationWithUser} from "./utils";
 import {v} from "convex/values";
 import { queryWithUser } from "./utils";
 import { Id } from "./_generated/dataModel";
+import { ConvexError } from "convex/values";
 
 export const getProduct = queryWithUser({
     args:{
@@ -11,7 +12,7 @@ export const getProduct = queryWithUser({
         const product= ctx.db.get(productId as Id<'products'>)
     }
 })
-export const createProduct =    mutationWithUser({
+export const createProduct =   mutationWithUser({
     args:{ name:v.string(),
         description:v.string(),
         price:v.number(),
@@ -27,6 +28,37 @@ export const createProduct =    mutationWithUser({
             currency:"USD",
             price: Number(price.toFixed(2)),
            
+            coverImage,
+            content,
+            published,
+
+        })
+    }
+})
+
+
+export const updateProduct =   mutationWithUser({
+    args:{ 
+        productId:v.id("products"),
+        name:v.string(),
+        description:v.string(),
+        price:v.number(),
+        coverImage:v.string(),
+        content:v.string(),
+        published:v.boolean()
+    },
+    handler: async (ctx, {productId, name, description, price,coverImage,content,published})=>{
+        const product=await ctx.db.get(productId);
+        if (ctx.userId !==product?.clerkId){
+            throw new ConvexError("Unauthorized");
+
+        }
+        await ctx.db.patch(productId,{
+            clerkId:ctx.userId,
+            name,
+            description,
+            currency:"USD",
+            price: Number(price.toFixed(2)), 
             coverImage,
             content,
             published,
