@@ -29,9 +29,6 @@ export default async function Page({ params }: Props) {
   );
 
 
-  if (!product) {
-    notFound();
-  }
 
   return (
     <ContentLayout
