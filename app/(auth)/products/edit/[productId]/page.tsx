@@ -14,6 +14,8 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
+  const { productId } = await params;
+
   const token = await getAuthToken();
 
   if (!token) {
@@ -22,7 +24,7 @@ export default async function Page({ params }: Props) {
 
   const product = await fetchQuery(
     api.products.getProduct,
-    { productId: params.productId },
+    { productId },
     { token }
   );
 
