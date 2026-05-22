@@ -5,21 +5,23 @@ import { StoreIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProductCard } from "./product-card";
 
-
-type Props={  params: Promise<{
+type Props = {
+  params: Promise<{
     username: string;
-  }>;}
-export default async function StorePage({params}:Props){
+  }>;
+};
 
-    const { username } = await params;
+export default async function StorePage({ params }: Props) {
+  const { username } = await params;
+  console.log(username);
 
   const { store, products } = await fetchQuery(api.products.getStorePage, {
     username,
   });
-    if (!store) 
-    {
-        notFound();
-    }
+
+  if (!store) {
+    notFound();
+  }
     return (
         <div className="StoraPage">
             <header className="p-8 bg-zinc-200 flex items-center justify-between border-b  border-zinc-300 ">
