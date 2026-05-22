@@ -19,7 +19,6 @@ type Props={
 
 export default function DeleteProductDialog({product}:Props){
 return (
-<AlertDialog>
   <AlertDialogContent>
     <AlertDialogHeader>
       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -32,7 +31,6 @@ return (
       <AlertDialogAction>Continue</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
-</AlertDialog>
 
 )
 }
