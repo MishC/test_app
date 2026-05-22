@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { queryWithUser } from "./utils";
 import { Id } from "./_generated/dataModel";
 import { ConvexError } from "convex/values";
+import { query } from "./_generated/server";
 
 export const getProduct = queryWithUser({
     args: {
@@ -110,3 +111,13 @@ export const deleteProduct = mutationWithUser({
     }
 }
     );
+
+
+export const getStorePage=  query({
+    args:{username:v.string()},
+    handler:async(ctx,{username})=>{
+        const store= await getUserByClerkId(ctx.db, username);
+        const products= await getProductsByClerkId(ctx.db, store?.clerkId!);
+        return {store, products}
+    }
+})  
