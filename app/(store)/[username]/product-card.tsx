@@ -13,7 +13,7 @@ import { formatPrice } from "@/lib/formatPrice"
 import Link from "next/link"
 
 type Props={product:Doc<'products'>, store:Doc<"users">,}
-export function ProductCard({product}:Props){
+export function ProductCard({product,store}:Props){
     return (<><Card>
   <CardHeader>
     <CardTitle className="flex justify-between"><span>{product.name}</span>
