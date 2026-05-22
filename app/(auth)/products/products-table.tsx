@@ -31,7 +31,7 @@ type ProductWithStats = Doc<"products"> & {
   user: Doc<"users"> | null;
 };
 
- type Props = {
+type Props = {
   products: ProductWithStats[];
 };
 
@@ -100,15 +100,14 @@ export default function ProductTable({ products }: Props) {
                         <DropdownMenuItem>Edit</DropdownMenuItem>
                       </Link>
                       <DropdownMenuSeparator />
-
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onSelect={(e) => e.preventDefault()}
-                        asChild
-                      >
-                        {" "}
-                        <AlertDialogTrigger asChild>Delete </AlertDialogTrigger>
-                      </DropdownMenuItem>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <DeleteProductDialog product={product} />
