@@ -85,11 +85,11 @@ export default  async function ProductTable({products}:Props) {
               <DropdownMenuContent align="end">
                 <Link href={`/products/edit/${product._id}`}>
                 <DropdownMenuItem>Edit</DropdownMenuItem></Link>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <AlertDialogTrigger asChild>
                 <DropdownMenuItem variant="destructive">
                   Delete
-                </DropdownMenuItem>
+                </DropdownMenuItem></AlertDialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
           </TableCell>
