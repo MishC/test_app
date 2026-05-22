@@ -10,13 +10,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { Doc } from "@/convex/_generated/dataModel"
 
-export default function DeleteProductDialog(){
+type Props={
+    product:Doc<"products">;
+
+}
+
+export default function DeleteProductDialog({product}:Props){
 return (
 <AlertDialog>
-  <AlertDialogTrigger asChild>
-    <Button variant="outline">Show Dialog</Button>
-  </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
