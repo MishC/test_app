@@ -24,8 +24,7 @@ return (
     <AlertDialogHeader>
       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
       <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your product
-        from database.
+        This will permanently delete this product. This action cannot be undone. 
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
