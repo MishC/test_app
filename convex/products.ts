@@ -1,42 +1,42 @@
-import {getProductsByClerkId, getSalesByProductId, getUserByClerkId, mutationWithUser} from "./utils";
-import {v} from "convex/values";
+import { getProductsByClerkId, getSalesByProductId, getUserByClerkId, mutationWithUser } from "./utils";
+import { v } from "convex/values";
 import { queryWithUser } from "./utils";
 import { Id } from "./_generated/dataModel";
 import { ConvexError } from "convex/values";
 
 export const getProduct = queryWithUser({
-  args: {
-    productId: v.id("products"),
-  },
-  handler: async (ctx, { productId }) => {
-    const product = await ctx.db.get(productId as Id<'products'>);
+    args: {
+        productId: v.id("products"),
+    },
+    handler: async (ctx, { productId }) => {
+        const product = await ctx.db.get(productId as Id<'products'>);
 
-    if (!product) {
-      throw new ConvexError("Product not found");
-    }
+        if (!product) {
+            throw new ConvexError("Product not found");
+        }
 
-    if (ctx.userId !== product.clerkId) {
-      throw new ConvexError("Unauthorized");
-    }
+        if (ctx.clerkId !== product.clerkId) {
+            throw new ConvexError("Unauthorized");
+        }
 
-    return product;
-  },
+        return product;
+    },
 });
 
 
-export const getProducts= queryWithUser({
-    args:{},
-    handler: async(ctx)=>{
-        const user=await getUserByClerkId(ctx.db, ctx.userId!);
-        const products = getProductsByClerkId(ctx.db, ctx.userId!)
+export const getProducts = queryWithUser({
+    args: {},
+    handler: async (ctx) => {
+        const user = await getUserByClerkId(ctx.db, ctx.clerkId!);
+        const products = getProductsByClerkId(ctx.db, ctx.clerkId!)
 
-        const productsWithRevenue=await Promise.all((await products).map(async product=>{
-            const sales=await getSalesByProductId(ctx.db, product._id);
+        const productsWithRevenue = await Promise.all((await products).map(async product => {
+            const sales = await getSalesByProductId(ctx.db, product._id);
             return {
                 ...product,
-                sales:sales.length,
+                sales: sales.length,
                 user,
-                revenue:sales.reduce((acc, sale)=>acc+sale.price,0)
+                revenue: sales.reduce((acc, sale) => acc + sale.price, 0)
             }
 
         }))
@@ -44,22 +44,23 @@ export const getProducts= queryWithUser({
     }
 })
 
-export const createProduct =   mutationWithUser({
-    args:{ name:v.string(),
-        description:v.string(),
-        price:v.number(),
-        coverImage:v.string(),
-        content:v.string(),
-        published:v.boolean()
+export const createProduct = mutationWithUser({
+    args: {
+        name: v.string(),
+        description: v.string(),
+        price: v.number(),
+        coverImage: v.string(),
+        content: v.string(),
+        published: v.boolean()
     },
-    handler: async (ctx, {name, description, price,coverImage,content,published})=>{
-        await ctx.db.insert("products",{
-            clerkId:ctx.userId,
+    handler: async (ctx, { name, description, price, coverImage, content, published }) => {
+        await ctx.db.insert("products", {
+            clerkId: ctx.clerkId,
             name,
             description,
-            currency:"USD",
+            currency: "USD",
             price: Number(price.toFixed(2)),
-           
+
             coverImage,
             content,
             published,
@@ -69,28 +70,28 @@ export const createProduct =   mutationWithUser({
 })
 
 
-export const updateProduct =   mutationWithUser({
-    args:{ 
-        productId:v.id("products"),
-        name:v.string(),
-        description:v.string(),
-        price:v.number(),
-        coverImage:v.string(),
-        content:v.string(),
-        published:v.boolean()
+export const updateProduct = mutationWithUser({
+    args: {
+        productId: v.id("products"),
+        name: v.string(),
+        description: v.string(),
+        price: v.number(),
+        coverImage: v.string(),
+        content: v.string(),
+        published: v.boolean()
     },
-    handler: async (ctx, {productId, name, description, price,coverImage,content,published})=>{
-        const product=await ctx.db.get(productId);
-        if (ctx.userId !==product?.clerkId){
+    handler: async (ctx, { productId, name, description, price, coverImage, content, published }) => {
+        const product = await ctx.db.get(productId);
+        if (ctx.clerkId !== product?.clerkId) {
             throw new ConvexError("Unauthorized");
 
         }
-        await ctx.db.patch(productId,{
-            clerkId:ctx.userId,
+        await ctx.db.patch(productId, {
+            clerkId: ctx.clerkId,
             name,
             description,
-            currency:"USD",
-            price: Number(price.toFixed(2)), 
+            currency: "USD",
+            price: Number(price.toFixed(2)),
             coverImage,
             content,
             published,
@@ -98,3 +99,14 @@ export const updateProduct =   mutationWithUser({
         })
     }
 })
+
+
+export const deleteProduct = mutationWithUser({
+    args: { productId: v.id("products") },
+    handler: async (ctx, { productId }) => {
+        const product = await ctx.db.get(productId);
+        if (ctx.clerkId !== product?.clerkId) { throw new ConvexError("Unauthorized") }
+        await ctx.db.delete(productId);
+    }
+}
+    );

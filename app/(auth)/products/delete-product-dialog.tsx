@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Doc } from "@/convex/_generated/dataModel"
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import toast from "react-hot-toast";
 
 type Props={
     product:Doc<"products">;
@@ -18,6 +21,7 @@ type Props={
 }
 
 export default function DeleteProductDialog({product}:Props){
+    const deleteProduct=useMutation(api.products.deleteProduct);
 return (
   <AlertDialogContent>
     <AlertDialogHeader>
@@ -28,7 +32,7 @@ return (
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction>Continue</AlertDialogAction>
+      <AlertDialogAction onClick={async ()=>{ deleteProduct();toast("Product deleted")}}>Continue</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 

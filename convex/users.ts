@@ -6,7 +6,7 @@ import { getUserByClerkId, mutationWithUser, queryWithUser } from "./utils";
 export const getUser = queryWithUser({
   args: {},
   handler: (ctx) => { 
-    return getUserByClerkId(ctx.db, ctx.userId!);
+    return getUserByClerkId(ctx.db, ctx.clerkId!);
   }
 });
 export const createUser = internalMutation({
@@ -43,12 +43,12 @@ export const updateUser = mutationWithUser({
   // the new username is already taken by another user, by querying the users table with the by_email index and filtering out the current user with the clerkId from the auth context
   handler: async (ctx, {  userId,name, about, username }) => {
     const isUsernameTaken = await ctx.db.query("users").withIndex('by_username', q=> q.eq("username", username!)).
-    filter(q=>q.neq(q.field('clerkId'), ctx.userId!)).first();
+    filter(q=>q.neq(q.field('clerkId'), ctx.clerkId!)).first();
     if (isUsernameTaken) {
       throw new ConvexError("USERNAME_TAKEN");
 
     }
-    const user = await getUserByClerkId(ctx.db, ctx.userId!);
+    const user = await getUserByClerkId(ctx.db, ctx.clerkId!);
     if (!user) {
       throw new ConvexError("User not found");
     }
@@ -63,7 +63,7 @@ export const updateUser = mutationWithUser({
     },
     handler: async (ctx, { userId, logo }) => 
       {
-      const user = await getUserByClerkId(ctx.db, ctx.userId!);
+      const user = await getUserByClerkId(ctx.db, ctx.clerkId!);
       if (!user) {
         throw new ConvexError("User not found");
       }

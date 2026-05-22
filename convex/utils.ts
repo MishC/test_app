@@ -1,9 +1,14 @@
 import { Auth } from "convex/server";
-import {customAction, customCtx,  customMutation, customQuery} from "convex-helpers/server/customFunctions";
+import {
+  customAction,
+  customCtx,
+  customMutation,
+  customQuery,
+} from "convex-helpers/server/customFunctions";
 import { action, DatabaseReader, mutation, query } from "./_generated/server";
-import { ConvexError, v } from "convex/values";
+import { ConvexError } from "convex/values";
 
-export async function getUserIdOrNull(ctx: { auth: Auth }) {
+export async function getClerkIdOrNull(ctx: { auth: Auth }) {
   const authInfo = await ctx.auth.getUserIdentity();
 
   if (!authInfo?.subject) {
@@ -13,103 +18,116 @@ export async function getUserIdOrNull(ctx: { auth: Auth }) {
   return authInfo.subject;
 }
 
-async function getUserId(ctx: {auth:Auth}) {
- const authInfo = await ctx.auth.getUserIdentity(); //here is the token->user id from the token!!
-  if (!authInfo?.subject) {
-      throw new Error("Not authenticated");
-    }
+async function getClerkId(ctx: { auth: Auth }) {
+  const clerkId = await getClerkIdOrNull(ctx);
 
- return authInfo?.subject;
-    }
-// Helper function to get the current user based on the auth context
-export const queryWithUser=customQuery(
-    query,
-    customCtx(async (ctx) => {
-        return{
-   userId: await getUserId(ctx)  //we get userId from db
-        };
-    })
+  if (!clerkId) {
+    throw new ConvexError("Not authenticated");
+  }
+
+  return clerkId;
+}
+
+export const queryWithUser = customQuery(
+  query,
+  customCtx(async (ctx) => {
+    return {
+      clerkId: await getClerkId(ctx),
+    };
+  })
 );
 
-export const mutationWithUser=customMutation(
-    mutation,
-    customCtx(async (ctx) => {
-        const userId= await getUserId(ctx);
-        if (!userId) {
-            throw new ConvexError(`Unauthorized. You must be logged in to perform this action.`);}
-        return{ userId};
-    })
+export const mutationWithUser = customMutation(
+  mutation,
+  customCtx(async (ctx) => {
+    return {
+      clerkId: await getClerkId(ctx),
+    };
+  })
 );
 
-
-export const actionWithUser=customAction(
-    action,
-    customCtx(async (ctx) => {
-        const userId= await getUserId(ctx);
-        if (!userId) {
-            throw new ConvexError(`Unauthorized. You must be logged in to perform this action.`);}
-        return{ userId};
-    })
+export const actionWithUser = customAction(
+  action,
+  customCtx(async (ctx) => {
+    return {
+      clerkId: await getClerkId(ctx),
+    };
+  })
 );
 
-queryWithUser({
-    args:{
-        clerkId:v.string()}, 
-handler: async (ctx,args)=>{
-    const user= await getUserByClerkId(ctx.db, args.clerkId);
-    return user;
-},
+export const getCurrentUser = queryWithUser({
+  args: {},
+  handler: async (ctx) => {
+    return await getUserByClerkId(ctx.db, ctx.clerkId);
+  },
 });
 
-
-export const getUserByClerkId= async(db:DatabaseReader, clerkId:string)=>{
-    const user= await db.query('users')
-    .withIndex('by_clerkId', (q)=>q.eq('clerkId', clerkId))
+export const getUserByClerkId = async (
+  db: DatabaseReader,
+  clerkId: string
+) => {
+  return await db
+    .query("users")
+    .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
     .first();
-    return user;
-}
+};
 
-
-export const getUserByEmail= async(db:DatabaseReader, email:string)=>{
-    const user= await db.query('users')
-    .withIndex('by_email', (q)=>q.eq('email', email))
+export const getUserByEmail = async (
+  db: DatabaseReader,
+  email: string
+) => {
+  return await db
+    .query("users")
+    .withIndex("by_email", (q) => q.eq("email", email))
     .first();
-    return user;
-}
+};
 
-export const getProductsByClerkId= async(db:DatabaseReader, clerkId:string)=>{
-    const products= await db.query('products')
-    .withIndex('by_clerkId', (q)=>q.eq('clerkId', clerkId))
+export const getProductsByClerkId = async (
+  db: DatabaseReader,
+  clerkId: string
+) => {
+  return await db
+    .query("products")
+    .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
     .collect();
-    return products;
-}   
+};
 
-export const getSalesByStoreClerkId= async(db:DatabaseReader, clerkId:string)=>{
-    const sales= await db.query('sales')
-    .withIndex('by_storeClerkId', (q)=>q.eq('storeClerkId', clerkId))
+export const getSalesByStoreClerkId = async (
+  db: DatabaseReader,
+  clerkId: string
+) => {
+  return await db
+    .query("sales")
+    .withIndex("by_storeClerkId", (q) => q.eq("storeClerkId", clerkId))
     .collect();
-    return sales;
-}
+};
 
-export const getSalesByCustomerClerkId= async(db:DatabaseReader, clerkId:string)=>{
-    const sales= await db.query('sales')
-    .withIndex('by_customerClerkId', (q)=>q.eq('customerClerkId', clerkId))
+export const getSalesByCustomerClerkId = async (
+  db: DatabaseReader,
+  clerkId: string
+) => {
+  return await db
+    .query("sales")
+    .withIndex("by_customerClerkId", (q) => q.eq("customerClerkId", clerkId))
     .collect();
-    return sales;
-}
+};
 
-export const getSalesByProductId= async(db:DatabaseReader, productId:string)=>{
-    const sales= await db.query('sales')
-    .withIndex('by_productId', (q)=>q.eq('productId', productId))
+export const getSalesByProductId = async (
+  db: DatabaseReader,
+  productId: string
+) => {
+  return await db
+    .query("sales")
+    .withIndex("by_productId", (q) => q.eq("productId", productId))
     .collect();
-    return sales;
-}
+};
 
-
-
-export const getKeyByClerkId= async(db:DatabaseReader, clerkId:string)=>{
-    const key= await db.query('keys')
-    .withIndex('by_clerkId', (q)=>q.eq('clerkId', clerkId))
+export const getKeyByClerkId = async (
+  db: DatabaseReader,
+  clerkId: string
+) => {
+  return await db
+    .query("keys")
+    .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
     .first();
-    return key;
-}
+};
