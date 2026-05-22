@@ -1,3 +1,4 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ export type Props = {
   products: ProductWithStats[];
 };
 
-export default async function ProductTable({ products }: Props) {
+export default  function ProductTable({ products }: Props) {
   return (
     <Table>
       <TableHeader>
