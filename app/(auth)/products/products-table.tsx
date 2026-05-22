@@ -24,17 +24,18 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { formatPrice } from "@/lib/formatPrice";
 import { CustomImage } from "@/components/ui/custom-image";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-export type ProductWithStats = Doc<"products"> & {
+
+type ProductWithStats = Doc<"products"> & {
   sales: number;
   revenue: number;
   user: Doc<"users"> | null;
 };
 
-export type Props = {
+ type Props = {
   products: ProductWithStats[];
 };
 
-export default  function ProductTable({ products }: Props) {
+export default function ProductTable({ products }: Props) {
   return (
     <Table>
       <TableHeader>
@@ -99,14 +100,18 @@ export default  function ProductTable({ products }: Props) {
                         <DropdownMenuItem>Edit</DropdownMenuItem>
                       </Link>
                       <DropdownMenuSeparator />
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem variant="destructive">
-                          Delete
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
+
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={(e) => e.preventDefault()}
+                        asChild
+                      >
+                        {" "}
+                        <AlertDialogTrigger asChild>Delete </AlertDialogTrigger>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <DeleteProductDialog product={product}/>
+                  <DeleteProductDialog product={product} />
                 </AlertDialog>
               </TableCell>
             </TableRow>
