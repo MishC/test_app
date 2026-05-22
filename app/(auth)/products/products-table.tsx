@@ -1,13 +1,13 @@
-import { MoreHorizontalIcon } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontalIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -15,22 +15,65 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import Link from "next/link";
 
-export function ProductTable() {
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { formatPrice } from "@/lib/formatPrice";
+import { CustomImage } from "@/components/ui/custom-image";
+export type ProductWithStats = Doc<"products"> & {
+  sales: number;
+  revenue: number;
+  user: Doc<"users"> | null;
+};
+
+export type Props = {
+  products: ProductWithStats[];
+};
+
+export default  async function ProductTable({products}:Props) {
+
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Product</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+             <TableHead className="hidden w-25 sm:table-cell">
+                <span className="sr-only">Image</span></TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Sales</TableHead>        
+          <TableHead className="hidden md:table-cell">Revenue</TableHead>
+
+          <TableHead className="hidden md:table-cell">Price</TableHead>
+        <TableHead className="hidden md:table-cell">Status</TableHead>
+
+          <TableHead className="text-right"><span className="sr-only">Actions</span></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">Wireless Mouse</TableCell>
-          <TableCell>$29.99</TableCell>
+        {products&& products.map((product)=> 
+        <TableRow key={product?._id}> 
+            <TableCell className="hidden w-25 sm:table-cell">
+            <CustomImage src={product.coverImage} alt={product.name} />
+            </TableCell>
+            <TableCell className="font-medium">
+            <div>{product?.name}</div>
+ {/*            {product.user && (
+  <Link href={`/${product.user.username}/${product._id}`} target="_blank">
+    <span className="text-xs underline">Preview</span>
+  </Link>
+)} */}
+         </TableCell>
+                   
+          <TableCell className="hidden md:table-cell">{product.sales}</TableCell>
+        <TableCell className="hidden md:table-cell">{formatPrice({price:product.revenue, })}</TableCell>
+
+
+          <TableCell className="hidden md:table-cell">{formatPrice({price:product.price, })}</TableCell>
+          <TableCell className="hidden md:table-cell">
+           <Badge variant={product.published ? "default" : "outline"}>
+                {product.published?"Published":"Draft"}</Badge>
+          </TableCell>
           <TableCell className="text-right">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -40,7 +83,8 @@ export function ProductTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
+                <Link href={`/products/edit/${product._id}`}>
+                <DropdownMenuItem>Edit</DropdownMenuItem></Link>
                 <DropdownMenuItem>Duplicate</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem variant="destructive">
@@ -50,51 +94,9 @@ export function ProductTable() {
             </DropdownMenu>
           </TableCell>
         </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">Mechanical Keyboard</TableCell>
-          <TableCell>$129.99</TableCell>
-          <TableCell className="text-right">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="size-8">
-                  <MoreHorizontalIcon />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">USB-C Hub</TableCell>
-          <TableCell>$49.99</TableCell>
-          <TableCell className="text-right">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="size-8">
-                  <MoreHorizontalIcon />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
+        )}
+    
       </TableBody>
     </Table>
-  )
+  );
 }
