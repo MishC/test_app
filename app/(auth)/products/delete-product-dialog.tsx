@@ -21,8 +21,8 @@ return (
     <AlertDialogHeader>
       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
       <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        from our servers.
+        This action cannot be undone. This will permanently delete your product
+        from database.
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
