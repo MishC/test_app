@@ -7,6 +7,7 @@ import {
   Cog,
   Library,
   ChevronUp,
+  Store,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -42,6 +43,11 @@ export function Sidebar() {
       icon: ShoppingBasket,
     },
     {
+      label: "Store",
+      href: "/Store",
+      icon: Store,
+    },
+    {
       label: "Sales",
       href: "/sales",
       icon: CreditCard,
@@ -51,11 +57,7 @@ export function Sidebar() {
       href: "/settings",
       icon: Cog,
     },
-    {
-      label: "Library",
-      href: "/library",
-      icon: Library,
-    },
+    
   ];
   return (
     <div className="flex flex-col justify-between h-screen">
