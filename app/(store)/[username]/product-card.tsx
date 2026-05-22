@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -7,31 +7,77 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Doc } from "@/convex/_generated/dataModel"
-import { formatPrice } from "@/lib/formatPrice"
-import Link from "next/link"
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Doc } from "@/convex/_generated/dataModel";
+import { formatPrice } from "@/lib/formatPrice";
+import Link from "next/link";
+import { StoreIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type Props={product:Doc<'products'>, store:Doc<'users'>,}
-export function ProductCard({product,store}:Props){
-    return (<><Card>
-  <CardHeader>
-    <CardTitle className="flex justify-between"><span>{product.name}</span>
-    <span className="text-lg">{formatPrice({price:product.price})}</span>
-    
-    </CardTitle>
-    <CardDescription>{product.description}</CardDescription>
-    <CardAction>Card Action</CardAction>
-  </CardHeader>
-  <CardContent>
-    {product.coverImage?(<img src={product.coverImage} className="border mb-6 h-40 w*full object-cover rounded-md"/>):<div 
-    className="rounded-md"></div>}
-    <Button asChild size="sm" className="w-full">
-        <Link href={`/${store.username}/${product._id}`}>View Product</Link>
-    </Button>
-  </CardContent>
-  <CardFooter>
-    <p>Card Footer</p>
-  </CardFooter>
-</Card></>)
+type Props = {
+  product: Doc<"products">;
+  store: Doc<"users">;
+};
+
+export function ProductCard({ product, store }: Props) {
+  return (
+    <Card className="overflow-hidden transition-shadow hover:shadow-md">
+      <CardHeader>
+        <CardTitle className="flex items-start justify-between gap-3">
+          <span className="line-clamp-1">{product.name}</span>
+          <span className="whitespace-nowrap text-lg font-semibold">
+            {formatPrice({
+              price: product.price,
+              currency: product.currency ?? "USD",
+            })}
+          </span>
+        </CardTitle>
+
+        <CardDescription className="line-clamp-2">
+          {product.description}
+        </CardDescription>
+
+        <CardAction>
+          <Badge variant={product.published ? "default" : "outline"}>
+            {product.published ? "Published" : "Draft"}
+          </Badge>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {product.coverImage ? (
+          <img
+            src={product.coverImage}
+            alt={product.name}
+            className={cn("h-40 rounded-md border object-contain")}
+          />
+        ) : (
+          <div className="flex h-40 w-full items-center justify-center rounded-md border bg-muted text-sm text-muted-foreground">
+            No image
+          </div>
+        )}
+
+        <Button asChild size="sm" className="w-full">
+          <Link href={`/${store.username}/${product._id}`}>View Product</Link>
+        </Button>
+      </CardContent>
+
+      <CardFooter className="flex items-center justify-between border-t bg-muted/30 px-6 py-4">
+        <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
+          <StoreIcon className="size-4 shrink-0" />
+          <span className="truncate">
+            {store.name ?? store.username ?? "Store"}
+          </span>
+        </div>
+
+        <Link
+          href={`/${store.username}`}
+          className="text-sm font-medium underline-offset-4 hover:underline"
+        >
+          Visit store
+        </Link>
+      </CardFooter>
+    </Card>
+  );
 }

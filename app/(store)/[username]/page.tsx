@@ -25,13 +25,17 @@ export default async function StorePage({ params }: Props) {
     return (
         <div className="StoraPage">
             <header className="p-8 bg-zinc-200 flex items-center justify-between border-b  border-zinc-300 ">
-<div className="flex items-center gap-3">
-<CustomImage src={store.logo} alt={store.name} />
+<div className="flex items-center gap-3 max-w-30 rounded-full object-cover">
+  <CustomImage
+    src={store.logo ?? ""}
+    alt={store.name ?? "Store logo"}
+    
+  />
 </div>
 
 <div className="flex items-center gap-3">
     <StoreIcon/>
-    <span className="font-semibold">{products.length} Product {products.length===1?"":"s"}</span>
+    <span className="font-semibold">{products.length} Product{products.length===1?"":"s"}</span>
 </div>
             </header>
             <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-3 p-8">
