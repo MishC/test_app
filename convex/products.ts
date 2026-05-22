@@ -1,4 +1,4 @@
-import {mutationWithUser} from "./utils";
+import {getProductsByClerkId, getSalesByProductId, getUserByClerkId, mutationWithUser} from "./utils";
 import {v} from "convex/values";
 import { queryWithUser } from "./utils";
 import { Id } from "./_generated/dataModel";
@@ -22,6 +22,28 @@ export const getProduct = queryWithUser({
     return product;
   },
 });
+
+
+export const getProducts= queryWithUser({
+    args:{},
+    handler: async(ctx)=>{
+        const user=await getUserByClerkId(ctx.db, ctx.userId!);
+        const products = getProductsByClerkId(ctx.db, ctx.userId!)
+
+        const productsWithRevenue=await Promise.all((await products).map(async product=>{
+            const sales=await getSalesByProductId(ctx.db, product._id);
+            return {
+                ...product,
+                sales:sales.length,
+                user,
+                revenue:sales.reduce((acc, sale)=>acc+sale.price,0)
+            }
+
+        }))
+        return productsWithRevenue;
+    }
+})
+
 export const createProduct =   mutationWithUser({
     args:{ name:v.string(),
         description:v.string(),
