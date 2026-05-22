@@ -8,6 +8,17 @@ import {
 import { action, DatabaseReader, mutation, query } from "./_generated/server";
 import { ConvexError } from "convex/values";
 
+export const getUserByUsername = async (
+  db: DatabaseReader,
+  username: string
+) => {
+  return await db
+    .query("users")
+    .withIndex("by_username", (q) => q.eq("username", username))
+    .first();
+};
+
+
 export async function getClerkIdOrNull(ctx: { auth: Auth }) {
   const authInfo = await ctx.auth.getUserIdentity();
 
