@@ -5,10 +5,17 @@ import { StoreIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProductCard } from "./product-card";
 
-type Props={params:{username:string}}
+
+type Props={  params: Promise<{
+    username: string;
+  }>;}
 export default async function StorePage({params}:Props){
 
-    const {store, products}=await fetchQuery(api.products.getStorePage,{username:params.username});
+    const { username } = await params;
+
+  const { store, products } = await fetchQuery(api.products.getStorePage, {
+    username,
+  });
     if (!store) 
     {
         notFound();
@@ -25,7 +32,7 @@ export default async function StorePage({params}:Props){
     <span className="font-semibold">{products.length} Product {products.length===1?"":"s"}</span>
 </div>
             </header>
-            <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap*3 p-8">
+            <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-3 p-8">
                 {products.map(product=>(<ProductCard key={product._id} store={store} product={product}/>))}
             </div>
         </div>
