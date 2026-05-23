@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { BuyButton } from "./buy-button";
 import { SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
+import { formatPrice } from "@/lib/formatPrice";
 
 type Props = {
   params: Promise<{
@@ -41,7 +42,19 @@ return (
        </div>
 
 {userId ? <BuyButton product={product} /> : <SignInButton><Button>Sign in to buy</Button></SignInButton>}
+    
+   
     </div>
+     <div className="text-sm font-medium sm:divide-y-0 border-zinc-300 grid sm:divide-x 
+    sm:grid-cols-2  divide-zinc-300 border-y">
+      <span className="flex items-center sm:justify-center px-4 py-2">
+        {formatPrice({price: product.price} )}
+      </span>
+      <span className="flex items-center sm:justify-center px-4 py-2">
+       {product.sales} sales
+      </span>
+    </div>
+    <div className="p-4 sm:text-base text-small">{product.description}</div>
       </div>
     </div>
 )
