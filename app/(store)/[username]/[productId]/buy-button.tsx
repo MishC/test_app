@@ -7,5 +7,6 @@ type Props={
 export function BuyButton({product}:Props){
     return(
        <Button>Buy now</Button>
+       
     )
 }
