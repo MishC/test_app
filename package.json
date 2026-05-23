@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm-run-all --parallel dev:frontend dev:backend",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "dev:frontend": "next dev",
-    "dev:backend": "convex dev"
+    "dev": "bun run dev:frontend & bun run dev:backend",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "lint": "bunx eslint",
+    "dev:frontend": "bun --bun next dev",
+    "dev:backend": "bunx convex dev"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
