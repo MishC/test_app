@@ -163,7 +163,7 @@ const setLink = useCallback(() => {
                       
 
             onClick={setLink}
-            className={cn( editorState.isLink ? "is-active" : "","bg-blue-500", "text-xs")}
+            className={cn( editorState?.isLink ? "is-active" : "","bg-blue-500", "text-xs")}
           >
             Link
           </Button>
@@ -171,7 +171,7 @@ const setLink = useCallback(() => {
             type="button"
             className={cn("bg-blue-500","text-xs")}
             onClick={() => editor.chain().focus().unsetLink().run()}
-            disabled={!editorState.isLink}
+            disabled={!editorState?.isLink}
           >
             Unlink
           </Button>
