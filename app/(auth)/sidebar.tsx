@@ -53,6 +53,11 @@ export function Sidebar() {
       icon: CreditCard,
     },
     {
+      label: "Library",
+      href: "/library",
+      icon: Library,
+    },
+    {
       label: "Settings",
       href: "/settings",
       icon: Cog,

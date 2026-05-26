@@ -14,6 +14,7 @@ import type * as keys from "../keys.js";
 import type * as products from "../products.js";
 import type * as storage from "../storage.js";
 import type * as stripe from "../stripe.js";
+import type * as stripe_utils from "../stripe_utils.js";
 import type * as users from "../users.js";
 import type * as utils from "../utils.js";
 
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   products: typeof products;
   storage: typeof storage;
   stripe: typeof stripe;
+  stripe_utils: typeof stripe_utils;
   users: typeof users;
   utils: typeof utils;
 }>;
