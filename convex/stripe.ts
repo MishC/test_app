@@ -1,8 +1,9 @@
 "use node"
 import Stripe from "stripe"
-import { action, ActionCtx } from "./_generated/server"
+import { action } from "./_generated/server"
 import { v } from "convex/values"
 import { internal } from "./_generated/api";
+import type { ActionCtx } from "./_generated/server"
 const domain=process.env.HOSTING_URL ?? "http://localhost:3000";
 
 export const pay = action({
@@ -26,10 +27,10 @@ export const pay = action({
             throw new Error("Store doesn't have a stripe key!")
         }
 
-        const stripe=new Stripe(storeStripeKey!);
+        const stripe: Stripe = new Stripe(storeStripeKey);
 
 //From Stripe API
-       const session= await stripe.checkout.sessions.create({
+       const session: Stripe.Checkout.Session = await stripe.checkout.sessions.create({
             line_items:[
                 {price_data:{
                     currency: product.currency ?? "USD", //change currency
@@ -41,6 +42,11 @@ export const pay = action({
                     unit_amount:Math.round(product.price*100),
                 }, quantity:1}
             ],
+            metadata: {
+                storeClerkId,
+                customerClerkId,
+                productId,
+            },
             mode:"payment",
             success_url:`${domain}/library`,
             cancel_url:`${domain}/${store.username}/${product._id}`
