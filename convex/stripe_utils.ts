@@ -1,3 +1,5 @@
+//For RunQueries
+
 import { v } from "convex/values";
 import { getKeyByClerkId, getUserByClerkId } from "./utils";
 import { internalQuery } from "./_generated/server";
@@ -17,7 +19,7 @@ export const getStoreStripeKey= internalQuery({
 export const getStore= internalQuery({
     args:{storeClerkId:v.string(),},
 
-    handler: async(ctx,{storeClerkId}) => {
+    handler: (ctx,{storeClerkId}) => {
         return getUserByClerkId(ctx.db,storeClerkId)
     
 },
@@ -28,7 +30,7 @@ export const getProduct= internalQuery({
 
     },
 
-    handler: async(ctx,{productId}) => {
+    handler: (ctx,{productId}) => {
         return ctx.db.get(productId);
     
 },

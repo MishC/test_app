@@ -1,6 +1,6 @@
 "use node"
 import Stripe from "stripe"
-import { action } from "./_generated/server"
+import { action, ActionCtx } from "./_generated/server"
 import { v } from "convex/values"
 import { internal } from "./_generated/api";
 const domain=process.env.HOSTING_URL ?? "http://localhost:3000";
@@ -11,13 +11,13 @@ export const pay = action({
         customerClerkId: v.string(),
         productId: v.id("products")
     },
-    handler: async ({ runQuery },
-     { storeClerkId, customerClerkId, productId }) => {
+    handler: async ({ runQuery }:ActionCtx,
+     { storeClerkId, customerClerkId, productId }):Promise<string|null>=> {
         const product = await runQuery(internal.stripe_utils.getProduct, { productId });
         const store = await runQuery(internal.stripe_utils.getStore, { storeClerkId });
         const storeStripeKey = await runQuery(internal.stripe_utils.getStoreStripeKey, { storeClerkId })
         if (!product){
-            throw new Error("Not a product")
+            throw new Error("Product not found")
         }
         if (!store?.username) {
             throw new Error("Store not found")
@@ -26,9 +26,10 @@ export const pay = action({
             throw new Error("Store doesn't have a stripe key!")
         }
 
-        const stripe=new Stripe(storeStripeKey);
+        const stripe=new Stripe(storeStripeKey!);
 
-        await stripe.checkout.sessions.create({
+//From Stripe API
+       const session= await stripe.checkout.sessions.create({
             line_items:[
                 {price_data:{
                     currency: product.currency ?? "USD", //change currency
@@ -44,6 +45,6 @@ export const pay = action({
             success_url:`${domain}/library`,
             cancel_url:`${domain}/${store.username}/${product._id}`
         })
-
+  return session.url;
     },
 });
