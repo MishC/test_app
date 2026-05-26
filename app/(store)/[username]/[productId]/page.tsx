@@ -37,12 +37,14 @@ return (
 :<div className="mb-2 h-48 bg-zinc-200"></div>}
       
     <div className="flex justify-between p-4 items-center">
+      <div className="flex flex-col">
         <h1 className="text-3xl font-semibold">{product.name}</h1>
        <div className="flex items-center">
         <img src={product.user?.logo} alt="" className="rounded-full size-6 border-black border shadow-sm"/>
        <Button asChild variant="link"><Link href={`/${product.user?.username}`}>{product.user?.username}</Link></Button>
        </div>
-<div>
+</div>
+
 {userId?
        (<BuyButton product={product} />)
        :
@@ -51,8 +53,9 @@ return (
        </SignInButton>)    
    
         }
-        </div>
-        </div>
+                </div>
+
+       
         <br/>
      <div className="text-sm font-medium sm:divide-y-0 border-zinc-300 grid sm:divide-x 
     sm:grid-cols-2  divide-zinc-300 border-y">
