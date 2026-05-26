@@ -29,6 +29,7 @@ export default async function StoreProductPage({ params }: Props) {
   }
   const { userId } = await auth();
 return (
+  <div>
     <div className="flex justify-center w-full sm:p-12 items-center ">
         <div className="w-full max-w-3xl border border-zinc-300 shadow-md overflow-hidden sm:rounded-lg">
 {product.coverImage?
@@ -51,6 +52,8 @@ return (
    
         }
         </div>
+        </div>
+        <br/>
      <div className="text-sm font-medium sm:divide-y-0 border-zinc-300 grid sm:divide-x 
     sm:grid-cols-2  divide-zinc-300 border-y">
       <span className="flex items-center sm:justify-center px-4 py-2">
@@ -60,6 +63,7 @@ return (
        {product.sales} sales
       </span>
     </div>
+    <br/>
     <div className="p-4 sm:text-base text-small">{product.description}</div>
       </div>
     </div>
