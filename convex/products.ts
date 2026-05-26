@@ -5,6 +5,8 @@ import { Id } from "./_generated/dataModel";
 import { ConvexError } from "convex/values";
 import { query } from "./_generated/server";
 
+const MINIMUM_PRODUCT_PRICE_USD = 0.5;
+
 export const getProduct = queryWithUser({
     args: {
         productId: v.id("products"),
@@ -55,6 +57,10 @@ export const createProduct = mutationWithUser({
         published: v.boolean()
     },
     handler: async (ctx, { name, description, price, coverImage, content, published }) => {
+        if (price < MINIMUM_PRODUCT_PRICE_USD) {
+            throw new ConvexError("Price must be at least $0.50");
+        }
+
         await ctx.db.insert("products", {
             clerkId: ctx.clerkId,
             name,
@@ -82,6 +88,10 @@ export const updateProduct = mutationWithUser({
         published: v.boolean()
     },
     handler: async (ctx, { productId, name, description, price, coverImage, content, published }) => {
+        if (price < MINIMUM_PRODUCT_PRICE_USD) {
+            throw new ConvexError("Price must be at least $0.50");
+        }
+
         const product = await ctx.db.get(productId);
         if (ctx.clerkId !== product?.clerkId) {
             throw new ConvexError("Unauthorized");
@@ -147,4 +157,3 @@ const sales= await getSalesByProductId(ctx.db, productId)
     return {...product,user,sales:sales.length};
 }
     })
-
