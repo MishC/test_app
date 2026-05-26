@@ -5,6 +5,7 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
+import toast from "react-hot-toast";
 
 type Props = {
   product: Doc<"products"> & { user: Doc<"users"> | null };
@@ -19,14 +20,20 @@ export function BuyButton({ product }: Props) {
       return;
     }
 
-    const url = await pay({
-      storeClerkId: product.user.clerkId,
-      customerClerkId: user.id,
-      productId: product._id,
-    });
+    try {
+      const url = await pay({
+        storeClerkId: product.user.clerkId,
+        customerClerkId: user.id,
+        productId: product._id,
+      });
 
-    if (url) {
-      window.location.href = url;
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Could not start checkout";
+      toast.error(message);
     }
   }
 
