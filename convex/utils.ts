@@ -77,10 +77,16 @@ export const getUserByClerkId = async (
   db: DatabaseReader,
   clerkId: string
 ) => {
-  return await db
+  const user= await db
     .query("users")
     .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
     .first();
+    const key= await getKeyByClerkId(db, clerkId);
+    const hasStripeKey=!!key?.stripeKey;
+    if (!user) {
+      return null;
+    }
+    return {...user, hasStripeKey};
 };
 
 export const getUserByEmail = async (
