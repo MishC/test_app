@@ -6,12 +6,18 @@ import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
+import { useState } from "react";
+
 
 type Props = {
-  product: Doc<"products"> & { user: Doc<"users"> | null };
+  product: Doc<"products"> & {
+    user: (Doc<"users"> & { hasStripeKey: boolean }) | null;
+  };
 };
 
 export function BuyButton({ product }: Props) {
+  const [isLoading, setLoading]=useState(false);  
   const pay = useAction(api.stripe.pay);
   const { isLoaded, user } = useUser();
 
@@ -21,6 +27,7 @@ export function BuyButton({ product }: Props) {
     }
 
     try {
+        setLoading(true);
       const url = await pay({
         storeClerkId: product.user.clerkId,
         customerClerkId: user.id,
@@ -31,9 +38,11 @@ export function BuyButton({ product }: Props) {
         window.location.href = url;
       }
     } catch (error) {
+        setLoading(false);
       const message =
         error instanceof Error ? error.message : "Could not start checkout";
-      toast.error(message);
+      toast.error(message,{position:"bottom-right"});
+
     }
   }
 
@@ -46,7 +55,8 @@ export function BuyButton({ product }: Props) {
   }
 
   return (
-    <Button onClick={handleBuy} disabled={!isLoaded || !product.user}>
+    <Button onClick={handleBuy} disabled={!isLoaded || !product.user?.hasStripeKey}>
+        {!isLoaded&&<LoaderCircle className="size-4 mr-2 animate-spin"/>}
       Buy now
     </Button>
   );
