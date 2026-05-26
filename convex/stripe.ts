@@ -5,6 +5,7 @@ import { v } from "convex/values"
 import { internal } from "./_generated/api";
 import type { ActionCtx } from "./_generated/server"
 const domain=process.env.HOSTING_URL ?? "http://localhost:3000";
+const MINIMUM_PRODUCT_PRICE_USD = 0.5;
 
 export const pay = action({
     args: {
@@ -25,6 +26,9 @@ export const pay = action({
         }
         if (!storeStripeKey){
             throw new Error("Store doesn't have a stripe key!")
+        }
+        if (product.price < MINIMUM_PRODUCT_PRICE_USD) {
+            throw new Error("This product is below Stripe's minimum checkout amount of $0.50.")
         }
 
         const stripe: Stripe = new Stripe(storeStripeKey);
