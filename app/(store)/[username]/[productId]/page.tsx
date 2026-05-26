@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { fetchQuery } from "convex/nextjs";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -13,6 +13,7 @@ type Props = {
   params: Promise<{
     username: string;
     productId: string;
+    product:Doc<"products">
   }>;
 };
 
@@ -37,14 +38,19 @@ return (
     <div className="flex justify-between p-4 items-center">
         <h1 className="text-3xl font-semibold">{product.name}</h1>
        <div className="flex items-center">
-        <img src={product.user?.logo} className="rounded-full size-6 border-black border shadow-sm"/>
+        <img src={product.user?.logo} alt="" className="rounded-full size-6 border-black border shadow-sm"/>
        <Button asChild variant="link"><Link href={`/${product.user?.username}`}>{product.user?.username}</Link></Button>
        </div>
-
-{userId ? <BuyButton product={product} /> : <SignInButton><Button>Sign in to buy</Button></SignInButton>}
-    
+<div>
+{userId?
+       (<BuyButton product={product} />)
+       :
+        (<SignInButton>
+       <Button>Sign in to buy</Button>
+       </SignInButton>)    
    
-    </div>
+        }
+        </div>
      <div className="text-sm font-medium sm:divide-y-0 border-zinc-300 grid sm:divide-x 
     sm:grid-cols-2  divide-zinc-300 border-y">
       <span className="flex items-center sm:justify-center px-4 py-2">
@@ -56,6 +62,7 @@ return (
     </div>
     <div className="p-4 sm:text-base text-small">{product.description}</div>
       </div>
+    </div>
     </div>
 )
 }
