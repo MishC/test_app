@@ -18,12 +18,14 @@ import { Button } from "@/components/ui/button";
 import { useUploadFile } from "@/lib/useUplodFile";
 import { ProductContentEditor } from "./product-content-editor";
 
+const MINIMUM_PRODUCT_PRICE_USD = 0.5;
+
 const productSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
-  price: z.number().min(0, {
-    message: "Price must be a positive number",
+  price: z.number().min(MINIMUM_PRODUCT_PRICE_USD, {
+    message: "Price must be at least $0.50",
   }),
   description: z.string(),
   coverImage: z.string(),
@@ -40,7 +42,7 @@ export function ProductForm() {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
-      price: 0,
+      price: MINIMUM_PRODUCT_PRICE_USD,
       description: "",
       coverImage: "",
       content: "",
@@ -158,8 +160,8 @@ export function ProductForm() {
                 id="price"
                 type="number"
                 step="0.01"
-                min="0"
-                placeholder="0.00"
+                min={MINIMUM_PRODUCT_PRICE_USD}
+                placeholder="0.50"
                 className="border-0 focus-visible:ring-0"
                 {...form.register("price", {
                   valueAsNumber: true,
