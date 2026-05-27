@@ -1,4 +1,4 @@
-import { queryWithUser } from "./utils";
+import { getSalesByCustomerClerkId, queryWithUser } from "./utils";
 
 export const getLibraryPrducts=queryWithUser({args:{},
-handler: async()=>{}})
+handler: async(ctx)=>{const sales=await getSalesByCustomerClerkId(ctx.db, ctx.userId!)}})

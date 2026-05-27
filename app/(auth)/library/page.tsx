@@ -14,8 +14,7 @@ export default async function Library() {
         </Link>
       }
     >
-    <ul></ul>
-         </ContentLayout>
+<div className="grid"></div>         </ContentLayout>
   
         </div>
     )
