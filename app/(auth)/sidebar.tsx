@@ -26,10 +26,12 @@ import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";  
+import { useQuery } from "convex/react";
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useUser();
+  const currentUser = useQuery(api.users.getUser);
  
   const links = [
     {
@@ -44,7 +46,7 @@ export function Sidebar() {
     },
     {
       label: "Store",
-      href: "/Store",
+      href: currentUser?.username ? `/${currentUser.username}` : "/sign-in",
       icon: Store,
     },
     {
@@ -77,7 +79,7 @@ export function Sidebar() {
         <nav className="grid gap-1 px-4">
           {links.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
               className={cn(
                 buttonVariants({
