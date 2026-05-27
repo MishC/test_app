@@ -10,13 +10,25 @@ http.route({ path:"/clerk", method:"POST",
 });
 http.route({ path:"/stripe", method:"POST",
     handler:httpAction( async (ctx,request)=>{
-const signature=request.headers.get('stripe-signature');
-const result=await ctx.runAction(internal.stripe.fulfill,{payload: await request.text(),signature});
-if (result.success){
-    return new Response(null, {status:200})
-} else {
-        return new Response("Webhook Error", {status:400})
+const signature=request.headers.get("stripe-signature");
+if (!signature) {
+    return new Response("Missing Stripe signature", {status:400});
+}
 
+try {
+    const result=await ctx.runAction(internal.stripe.fulfill,{
+        payload: await request.text(),
+        signature,
+    });
+
+    if (result?.success === true){
+        return new Response(null, {status:200});
+    }
+
+    return new Response("Webhook Error", {status:400});
+} catch (error) {
+    console.error("Stripe webhook failed", error);
+    return new Response("Invalid Stripe webhook", {status:400});
 }
     }),
 })
