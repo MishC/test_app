@@ -19,7 +19,7 @@ type Props = {
   product: Doc<"products">;
   store: Doc<"users">;
 };
-export function LibraryCard({product}:Props){
+export function LibraryCard({product, store}:Props){
      return (
     <Card className="overflow-hidden transition-shadow hover:shadow-md">
       <CardHeader>
@@ -58,17 +58,12 @@ export function LibraryCard({product}:Props){
         )}
 
         <Button asChild size="sm" className="w-full">
-          <Link href={`/${store.username}/${product._id}`}>View Product</Link>
+          <Link href={`/library/${product._id}`}>View Product</Link>
         </Button>
       </CardContent>
 
       <CardFooter className="flex items-center justify-between border-t bg-muted/30 px-6 py-4">
-        <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
-          <StoreIcon className="size-4 shrink-0" />
-          <span className="truncate">
-            {store.name ?? store.username ?? "Store"}
-          </span>
-        </div>
+    
 
         <Link
           href={`/${store.username}`}

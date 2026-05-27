@@ -29,7 +29,7 @@ export default defineSchema({
     storeClerkId: v.string(),
 
     customerClerkId: v.string(),
-    productId: v.string(),
+    productId: v.id("products"),
     price: v.number(),
     currency: v.optional(v.string()),
   }).index("by_storeClerkId", ["storeClerkId"]).index("by_customerClerkId", ["customerClerkId"]).index("by_productId", ["productId"]),

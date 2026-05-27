@@ -7,6 +7,7 @@ import {
 } from "convex-helpers/server/customFunctions";
 import { action, DatabaseReader, mutation, query } from "./_generated/server";
 import { ConvexError } from "convex/values";
+import type { Id } from "./_generated/dataModel";
 
 export const getUserByUsername = async (
   db: DatabaseReader,
@@ -131,7 +132,7 @@ export const getSalesByCustomerClerkId = async (
 
 export const getSalesByProductId = async (
   db: DatabaseReader,
-  productId: string
+  productId: Id<"products">
 ) => {
   return await db
     .query("sales")

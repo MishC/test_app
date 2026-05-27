@@ -1,21 +1,27 @@
 import { ContentLayout } from "../content-layout";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { getAuthToken } from "@/lib/getAuthToken";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+import { LibraryCard } from "./library-card";
 
 export default async function Library() {
-    return(
-        <div>
-            <ContentLayout
+  const token = await getAuthToken();
+  if (!token) {
+    return <div></div>;
+  }
+
+  const products = await fetchQuery(api.library.getLibraryProducts, {}, { token });
+
+  return (
+    <ContentLayout
       title="Library"
       description="View all your purchased products"
-      action={
-        <Link href="/products/new">
-          <Button className="px-5 py-5">New Product</Button>
-        </Link>
-      }
     >
-<div className="grid"></div>         </ContentLayout>
-  
-        </div>
-    )
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {products.map(({ product, store }) => (
+          <LibraryCard key={product._id} product={product} store={store} />
+        ))}
+      </div>
+    </ContentLayout>
+  );
 }
