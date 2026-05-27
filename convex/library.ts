@@ -1,3 +1,4 @@
+import { ConvexError, v } from "convex/values";
 import {
   getSalesByCustomerClerkId,
   getUserByClerkId,
@@ -28,3 +29,21 @@ export const getLibraryProducts = queryWithUser({
     return libraryProducts.filter((item) => item !== null);
   },
 });
+
+export const getLibraryProduct=queryWithUser({
+    args:{productId:v.id("products")},
+    handler: async(ctx,{productId})=>{
+        const product = await ctx.db.get(productId);
+        if (!product) {
+            throw new ConvexError("Product not found");
+        }
+        //product._id===productId
+
+        const sales=await getSalesByCustomerClerkId(ctx.db,ctx.clerkId);
+        const hasPurchasedProduct=sales.find((sale)=>sale.productId===productId);
+        if (!hasPurchasedProduct){
+            throw new ConvexError("Unauthorized");
+        }
+        return product;
+    }
+})
