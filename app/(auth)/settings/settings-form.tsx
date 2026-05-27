@@ -15,9 +15,14 @@ import { useState } from "react";
 
 //Data input error handling
 const settingsFormSchema = z.object({
-  username: z.string().min(3, {
-    message: "Username must be at least 3 characters",
-  }),
+  username: z
+    .string()
+    .min(3, {
+      message: "Username must be at least 3 characters",
+    })
+    .regex(/^\S+$/, {
+      message: "Username cannot contain spaces",
+    }),
   name: z.string().min(1, {
     message: "Name is required",
   }),
