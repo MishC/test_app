@@ -46,7 +46,7 @@ export function Sidebar() {
     },
     {
       label: "Store",
-      href: currentUser?.username ? `/${currentUser.username}` : "/sign-in",
+      href: currentUser?.username ? `/${currentUser.username}` : "/settings",
       icon: Store,
     },
     {
