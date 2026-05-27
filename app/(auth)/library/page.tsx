@@ -7,7 +7,7 @@ export default async function Library() {
         <div>
             <ContentLayout
       title="Library"
-      description="View all your purchased products."
+      description="View all your purchased products"
       action={
         <Link href="/products/new">
           <Button className="px-5 py-5">New Product</Button>
