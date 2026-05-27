@@ -6,8 +6,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyButton } from "./buy-button";
 import { SignInButton } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { formatPrice } from "@/lib/formatPrice";
+import { StoreIcon } from "lucide-react";
 
 type Props = {
   params: Promise<{
@@ -18,7 +19,7 @@ type Props = {
 };
 
 export default async function StoreProductPage({ params }: Props) {
-  const { productId } = await params;
+  const { productId, username } = await params;
 
   const product = await fetchQuery(api.products.getStoreProduct, {
     productId: productId as Id<"products">,
@@ -67,8 +68,19 @@ return (
       </span>
     </div>
     <br/>
-    <div className="p-4 sm:text-base text-small">{product.description}</div>
+    <div className="sm:text-base text-small"><span className="p-4  font-semibold mb-6">
+      Description</span><div className="p-4">{product.description}</div></div>
+    <footer className="flex justify-end items-end  border-t bg-muted/30 px-6 py-4">
+      
+        <Link
+          href={`/${username}`}
+          className="text-sm text-muted-foreground"
+        >
+          <StoreIcon className="size-4 shrink-0" />
+        </Link>
+      </footer>
       </div>
+   
     </div>
     </div>
 )

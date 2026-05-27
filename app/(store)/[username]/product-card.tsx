@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Doc } from "@/convex/_generated/dataModel";
 import { formatPrice } from "@/lib/formatPrice";
 import Link from "next/link";
-import { StoreIcon } from "lucide-react";
+import { Package2, StoreIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -64,18 +64,14 @@ export function ProductCard({ product, store }: Props) {
       </CardContent>
 
       <CardFooter className="flex items-center justify-between border-t bg-muted/30 px-6 py-4">
-        <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
-          <StoreIcon className="size-4 shrink-0" />
-          <span className="truncate">
-            {store.name ?? store.username ?? "Store"}
-          </span>
-        </div>
+        <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground"></div>
 
         <Link
-          href={`/${store.username}`}
-          className="text-sm font-medium underline-offset-4 hover:underline"
+          href={`/`}
+          className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground"
         >
-          Visit store
+          <Package2 className="size-4 shrink-0" />
+          <span className="truncate"></span>{" "}
         </Link>
       </CardFooter>
     </Card>

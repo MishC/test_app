@@ -4,6 +4,7 @@ import { fetchQuery } from "convex/nextjs"
 import { StoreIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProductCard } from "./product-card";
+import Link from "next/link";
 
 type Props = {
   params: Promise<{
@@ -26,11 +27,12 @@ export default async function StorePage({ params }: Props) {
         <div className="StoraPage">
             <header className="p-8 bg-zinc-200 flex items-center justify-between border-b  border-zinc-300 ">
 <div className="flex items-center gap-3 max-w-30 rounded-full object-cover">
+  <Link href="/" >
   <CustomImage
     src={store.logo ?? ""}
     alt={store.name ?? "Store logo"}
     
-  />
+  /></Link>
 </div>
 
 <div className="flex items-center gap-3">

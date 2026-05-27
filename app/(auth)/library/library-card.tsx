@@ -58,7 +58,7 @@ export function LibraryCard({product, store}:Props){
         )}
 
         <Button asChild size="sm" className="w-full">
-          <Link href={`/library/${product._id}`}>View Product</Link>
+          <Link href={`/library/${product._id}`}>Description</Link>
         </Button>
       </CardContent>
 

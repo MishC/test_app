@@ -44,11 +44,11 @@ export function Sidebar() {
       href: "/products",
       icon: ShoppingBasket,
     },
-    {
+  /*   {
       label: "Store",
       href: currentUser?.username ? `/${currentUser.username}` : "/settings",
       icon: Store,
-    },
+    }, */
     {
       label: "Sales",
       href: "/sales",
