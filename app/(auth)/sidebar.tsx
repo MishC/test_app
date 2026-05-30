@@ -26,12 +26,16 @@ import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";  
-import { useQuery } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useUser();
-  const currentUser = useQuery(api.users.getUser);
+  const { isAuthenticated } = useConvexAuth();
+  const currentUser = useQuery(
+    api.users.getUser,
+    isAuthenticated ? {} : "skip",
+  );
  
   const links = [
     {
@@ -44,11 +48,11 @@ export function Sidebar() {
       href: "/products",
       icon: ShoppingBasket,
     },
-  /*   {
+    {
       label: "Store",
       href: currentUser?.username ? `/${currentUser.username}` : "/settings",
       icon: Store,
-    }, */
+    },
     {
       label: "Sales",
       href: "/sales",
