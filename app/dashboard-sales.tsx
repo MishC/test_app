@@ -29,14 +29,15 @@ export function DashboardSales({ sales }: { sales: DashboardSale[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex h-72 items-end gap-3 border-b border-l border-border px-3 pt-8">
-          {sales.map((sale) => {
-            const height = (sale.revenue / maxRevenue) * 100;
+        <div>
+          <div className="relative flex h-72 items-end gap-3 rounded-md border border-border px-4 pb-4 pt-10">
+            <div className="pointer-events-none absolute inset-4 top-10 bg-[linear-gradient(to_top,var(--border)_1px,transparent_1px)] bg-[length:100%_25%] opacity-60" />
+            {sales.map((sale) => {
+              const height = (sale.revenue / maxRevenue) * 100;
 
-            return (
-              <div key={sale.date} className="flex h-full flex-1 flex-col justify-end gap-2">
-                <div className="flex h-full flex-col justify-end">
-                  <span className="mb-1 text-center text-xs font-medium tabular-nums">
+              return (
+                <div key={sale.date} className="relative z-10 flex h-full flex-1 flex-col justify-end">
+                  <span className="mb-2 min-h-4 text-center text-xs font-medium tabular-nums">
                     {sale.revenue > 0 ? formatPrice({ price: sale.revenue }) : ""}
                   </span>
                   {sale.revenue > 0 ? (
@@ -46,12 +47,16 @@ export function DashboardSales({ sales }: { sales: DashboardSale[] }) {
                     />
                   ) : null}
                 </div>
-                <span className="pb-2 text-center text-xs text-muted-foreground">
-                  {sale.day.slice(0, 3)}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          <div className="mt-3 grid grid-cols-7 gap-3 px-4">
+            {sales.map((sale) => (
+              <span key={sale.date} className="text-center text-xs text-muted-foreground">
+                {sale.day.slice(0, 3)}
+              </span>
+            ))}
+          </div>
         </div>
       </CardContent>
     </Card>
