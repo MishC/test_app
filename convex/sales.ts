@@ -1,9 +1,35 @@
-import { GenericDatabaseReader } from "convex/server";
-import { GenericId } from "convex/values";
 import { getSalesByStoreClerkId, getProductsByClerkId, queryWithUser } from "./utils";
 import { formatPrice } from "../lib/formatPrice"
 import { Doc } from "./_generated/dataModel";
 import dayjs from 'dayjs';
+
+export const getDashboardData = queryWithUser({
+    args: {},
+    handler: async (ctx) => {
+        const [sales, products] = await Promise.all([
+            getSalesByStoreClerkId(ctx.db, ctx.clerkId),
+            getProductsByClerkId(ctx.db, ctx.clerkId),
+        ]);
+
+        const revenue = sales.reduce((acc, sale) => acc + sale.price, 0);
+        const oneWeekAgo = dayjs().subtract(7, 'day');
+        const recentSales = sales.filter(sale => dayjs(sale._creationTime).isAfter(oneWeekAgo));
+        const chartSales = getPast7Days().map(({ date, day }) => ({
+            day,
+            date,
+            revenue: calculateRevenueForDay(day, recentSales),
+        }));
+
+        return {
+            stats: {
+                totalRevenue: formatPrice({ price: revenue }),
+                totalSales: sales.length,
+                totalProducts: products.length,
+            },
+            sales: chartSales,
+        };
+    },
+});
 
 export const getDashboardStats = queryWithUser({
     args: {},
@@ -50,6 +76,5 @@ function getPast7Days() {
 type Args = {
     price: number; currency: string;
 }
-
 
 

@@ -20,7 +20,7 @@ export default async function AuthLayout({ children }: Props) {
   await auth.protect();
   return (
     <div
-      className={`flex min-h-svh bg-zinc-50 dark:bg-black ${geistSans.variable} ${geistMono.variable}`}
+      className={`flex min-h-svh bg-zinc-50 dark:bg-black`}
     >
       <div className="fixed inset-y-0 left-0 hidden w-64 lg:block">
         <Sidebar />

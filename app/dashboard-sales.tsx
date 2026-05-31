@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 import {
@@ -15,10 +16,14 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { useConvexAuth, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 export const description = "Total Sales";
+
+type DashboardSale = {
+  day: string;
+  date: string;
+  revenue: number;
+};
 
 const chartConfig = {
   revenue: {
@@ -27,13 +32,10 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DashboardSales() {
-  const { isAuthenticated } = useConvexAuth();
-  const sales = useQuery(
-    api.sales.getDashboardSales,
-    isAuthenticated ? {} : "skip",
-  );
-  if (!sales) {
+export function DashboardSales({ sales }: { sales: DashboardSale[] }) {
+  const chartData = useMemo(() => sales, [sales]);
+
+  if (!chartData.length) {
     return null;
   }
 
@@ -42,14 +44,14 @@ export function DashboardSales() {
       <CardHeader>
         <CardTitle>Recent Sales</CardTitle>
         <CardDescription>
-          {sales[0].date} to {sales[sales.length - 1].date}
+          {chartData[0].date} to {chartData[chartData.length - 1].date}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-75 w-full">
           <BarChart
             accessibilityLayer
-            data={sales}
+            data={chartData}
             margin={{
               top: 36,
               right: 12,
@@ -69,7 +71,12 @@ export function DashboardSales() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="revenue" fill="#4caf50" radius={8}>
+            <Bar
+              dataKey="revenue"
+              fill="#4caf50"
+              radius={8}
+              isAnimationActive={false}
+            >
               <LabelList
                 position="top"
                 offset={6}
