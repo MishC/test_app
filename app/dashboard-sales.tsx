@@ -31,7 +31,7 @@ export function DashboardSales({ sales }: { sales: DashboardSale[] }) {
       <CardContent>
         <div className="flex h-72 items-end gap-3 border-b border-l border-border px-3 pt-8">
           {sales.map((sale) => {
-            const height = sale.revenue === 0 ? 2 : (sale.revenue / maxRevenue) * 100;
+            const height = (sale.revenue / maxRevenue) * 100;
 
             return (
               <div key={sale.date} className="flex h-full flex-1 flex-col justify-end gap-2">
@@ -39,10 +39,12 @@ export function DashboardSales({ sales }: { sales: DashboardSale[] }) {
                   <span className="mb-1 text-center text-xs font-medium tabular-nums">
                     {sale.revenue > 0 ? formatPrice({ price: sale.revenue }) : ""}
                   </span>
-                  <div
-                    className="min-h-0.5 rounded-t-md bg-green-600"
-                    style={{ height: `${height}%` }}
-                  />
+                  {sale.revenue > 0 ? (
+                    <div
+                      className="rounded-t-md bg-green-600"
+                      style={{ height: `${height}%` }}
+                    />
+                  ) : null}
                 </div>
                 <span className="pb-2 text-center text-xs text-muted-foreground">
                   {sale.day.slice(0, 3)}
