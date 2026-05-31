@@ -68,7 +68,7 @@ return (
       </span>
     </div>
     <br/>
-    <div className="sm:text-base text-small"><span className="p-4  font-semibold mb-6">
+    <div className="text-sm sm:text-base"><span className="p-4  font-semibold mb-6">
       Description</span><div className="p-4">{product.description}</div></div>
     <footer className="flex justify-end items-end  border-t bg-muted/30 px-6 py-4">
       
