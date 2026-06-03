@@ -2,10 +2,13 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { useState } from "react"
 
 import {
   Table,
@@ -15,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -25,14 +29,29 @@ export function SalesTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
   const table = useReactTable({
     data,
     columns,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
   })
 
   return (
+    <div className="w-full">  
+    <div className="mb-4 flex items-center">
+      <Input
+        placeholder="Filter customer names..." value={(table.getColumn("customerName")?.getFilterValue() as string) ?? ""}
+        onChange={(event) => table.getColumn("customerName")?.setFilterValue(event.target.value)}
+      className="max-w-sm"/>
+    </div>
     <div className="overflow-hidden rounded-md border">
+
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -75,6 +94,7 @@ export function SalesTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+    </div>
     </div>
   )
 }
