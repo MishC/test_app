@@ -3,12 +3,47 @@ import { ConvexError, v } from "convex/values";
 import { generateUsername } from "friendly-username-generator";
 import { getUserByClerkId, mutationWithUser, queryWithUser } from "./utils";
 
+function getAdminEmails() {
+  return (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export const getUser = queryWithUser({
   args: {},
   handler: (ctx) => { 
     return getUserByClerkId(ctx.db, ctx.clerkId!);
   }
 });
+
+export const isAdmin = queryWithUser({
+  args: {},
+  handler: async (ctx) => {
+    const user = await getUserByClerkId(ctx.db, ctx.clerkId);
+    return user?.role === "admin";
+  },
+});
+
+export const getPostAuthRedirect = queryWithUser({
+  args: {},
+  handler: async (ctx) => {
+    const user = await getUserByClerkId(ctx.db, ctx.clerkId);
+
+    if (!user) {
+      return null;
+    }
+
+    const isAdmin = user.role === "admin";
+
+    return {
+      isAdmin,
+      username: user.username ?? null,
+      redirectTo: isAdmin ? "/" : user.username ? `/${user.username}` : "/settings",
+    };
+  },
+});
+
 export const createUser = internalMutation({
   args: {
     clerkId: v.string(),
@@ -20,13 +55,16 @@ export const createUser = internalMutation({
 
   },
   handler: async (ctx, { clerkId, username, email, name, about, logo }) => {
+    const adminEmails = getAdminEmails();
+    const role = email && adminEmails.includes(email.toLowerCase()) ? "admin" : "customer";
     const userId = await ctx.db.insert("users", {
       clerkId,
       username: username || generateUsername(),
       email,
       name,
       about,
-      logo
+      logo, 
+      role
     });
     return userId;
   },

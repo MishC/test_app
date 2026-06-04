@@ -149,3 +149,13 @@ export const getKeyByClerkId = async (
     .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkId))
     .first();
 };
+
+export async function requireAdmin(db: DatabaseReader, clerkId: string) {
+  const user = await getUserByClerkId(db, clerkId);
+
+  if (!user || user.role !== "admin") {
+    throw new ConvexError("Unauthorized");
+  }
+
+  return user;
+}

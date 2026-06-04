@@ -11,6 +11,7 @@ export default defineSchema({
     name: v.optional(v.string()),
     about: v.optional(v.string()),
     logo: v.optional(v.string()),
+    role: v.union(v.literal("admin"), v.literal("customer"))
 
   }).index("by_clerkId", ["clerkId"],).index("by_email", ["email"]).index("by_username", ["username"]),
   products: defineTable({

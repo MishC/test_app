@@ -150,5 +150,26 @@ Important files:
 | `convex/users.ts` | Defines `createUser`, the internal mutation that writes to the `users` table. |
 | `convex/schema.ts` | Defines the `users` table and indexes like `by_clerkId`, `by_email`, and `by_username`. |
 
-## TO-DO
-make admin roles for users
+## Admin Roles
+
+Admin access is manually controlled with the `ADMIN_EMAILS` Convex environment
+variable. There is no automatic role sync. When a Clerk user is created, the
+Clerk webhook calls `convex/users.ts:createUser`; Convex checks the user's email
+against `ADMIN_EMAILS` and stores the role in `users.role`.
+
+Set `ADMIN_EMAILS` in Convex environment variables:
+
+```txt
+ADMIN_EMAILS=johndoe@gmail.com,another-admin@example.com
+```
+
+Rules:
+
+- If the new user's email is in `ADMIN_EMAILS`, Convex creates the user with
+  `role: "admin"`.
+- If the email is not in `ADMIN_EMAILS`, Convex creates the user with
+  `role: "customer"`.
+- Changing `ADMIN_EMAILS` affects future user creation only. Existing users must
+  be updated manually in the Convex dashboard or with a one-off admin mutation.
+- Frontend redirects use `api.users.isAdmin` / `api.users.getPostAuthRedirect`,
+  but protected backend functions must still check admin access in Convex.

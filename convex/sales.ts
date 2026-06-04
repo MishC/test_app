@@ -1,4 +1,4 @@
-import { getSalesByStoreClerkId, getProductsByClerkId, queryWithUser, getUserByClerkId } from "./utils";
+import { getSalesByStoreClerkId, getProductsByClerkId, queryWithUser, getUserByClerkId, requireAdmin } from "./utils";
 import { formatPrice } from "../lib/formatPrice"
 import { Doc, Id } from "./_generated/dataModel";
 import dayjs from 'dayjs';
@@ -80,6 +80,7 @@ type Args = {
 export const getAllSales = queryWithUser({
     args: {},
     handler: async (ctx) => {
+        await requireAdmin(ctx.db, ctx.clerkId);
         const sales = await getSalesByStoreClerkId(ctx.db, ctx.clerkId);
         const salesWithMetaData = await Promise.all(sales.map(async (sale) => {
             const customer = await getUserByClerkId(ctx.db, sale.customerClerkId);
