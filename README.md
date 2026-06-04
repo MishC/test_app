@@ -61,83 +61,42 @@ Rule of thumb:
 
 # Clerk&Convex sync via Clerk's webhooks with events
 
-Clerk sends webhook events to Convex when something happens in Clerk, for
-example when a user signs up. In this project, the Convex HTTP route is:
+Clerk webhooks are used when Clerk owns the event and Convex needs to sync its
+database. Normal app actions should use `queryWithUser` or `mutationWithUser`;
+webhooks are for background sync from Clerk to Convex.
 
-```ts
-// convex/http.ts
-http.route({
-  path: "/clerk",
-  method: "POST",
-  handler: onCreateUser,
-});
+| Clerk event | Convex webhook route | Convex handler | `ctx.runMutation` call | Convex mutation | Purpose |
+| --- | --- | --- | --- | --- | --- |
+| User is created in Clerk, for example after sign up | `POST /clerk` in `convex/http.ts` | `onCreateUser` in `convex/clerk.ts` | `ctx.runMutation(internal.users.createUser, {...})` | `createUser` in `convex/users.ts` | Creates a matching row in the Convex `users` table so the app can find profile data by `clerkId`. |
+
+Data mapping from Clerk to Convex:
+
+| Clerk data | Convex `users` field | Purpose |
+| --- | --- | --- |
+| `data.id` | `clerkId` | Stable Clerk user id used to connect auth identity with Convex data. |
+| `data.username` | `username` | Public/store username. If missing, Convex generates one in `createUser`. |
+| `data.email_addresses[0].email_address` | `email` | User email saved for profile/settings lookup. |
+| `data.first_name` + `data.last_name` | `name` | Display name. |
+| `data.image_url` | `logo` | Profile/store image. |
+
+Flow:
+
+```txt
+Clerk user.created event
+-> POST /clerk
+-> convex/clerk.ts:onCreateUser
+-> ctx.runMutation(internal.users.createUser, {...})
+-> convex/users.ts:createUser
+-> ctx.db.insert("users", {...})
 ```
 
-The handler lives in `convex/clerk.ts`. It receives the Clerk event, verifies it
-with `CLERK_WEBHOOK_SECRET`, reads `event.data`, and then calls an internal
-Convex mutation.
+Important files:
 
-Example from this app:
-
-```ts
-// convex/clerk.ts
-export const onCreateUser = httpAction(async (ctx, request) => {
-  const event = await validateRequest(request);
-  const data = event.data as UserJSON;
-
-  await ctx.runMutation(internal.users.createUser, {
-    clerkId: data.id,
-    username: data.username || "",
-    email: data.email_addresses[0].email_address,
-    name: `${data.first_name} ${data.last_name}`,
-    about: "",
-    logo: data.image_url,
-  });
-
-  return new Response(null, { status: 200 });
-});
-```
-
-That means Clerk sends user data like:
-
-- `data.id` -> saved as `clerkId`
-- `data.username` -> saved as `username`
-- `data.email_addresses[0].email_address` -> saved as `email`
-- `data.first_name` and `data.last_name` -> combined into `name`
-- `data.image_url` -> saved as `logo`
-
-The actual database write happens in `convex/users.ts`:
-
-```ts
-export const createUser = internalMutation({
-  args: {
-    clerkId: v.string(),
-    name: v.optional(v.string()),
-    email: v.optional(v.string()),
-    username: v.optional(v.string()),
-    about: v.optional(v.string()),
-    logo: v.optional(v.string()),
-  },
-  handler: async (ctx, { clerkId, username, email, name, about, logo }) => {
-    return await ctx.db.insert("users", {
-      clerkId,
-      username: username || generateUsername(),
-      email,
-      name,
-      about,
-      logo,
-    });
-  },
-});
-```
-
-Use this webhook flow when Clerk owns the event and Convex needs to sync its
-database. For example, after a Clerk `user.created` event, Convex creates a row
-in the `users` table so the rest of the app can query user profile data by
-`clerkId`.
-
-Use `queryWithUser` or `mutationWithUser` for normal logged-in app actions.
-Use Clerk webhooks for background sync from Clerk to Convex.
+| File | What it does |
+| --- | --- |
+| `convex/http.ts` | Registers the HTTP webhook route: `POST /clerk`. |
+| `convex/clerk.ts` | Verifies the Clerk webhook with `CLERK_WEBHOOK_SECRET` and sends user data to Convex. |
+| `convex/users.ts` | Defines `createUser`, the internal mutation that writes to the `users` table. |
+| `convex/schema.ts` | Defines the `users` table and indexes like `by_clerkId`, `by_email`, and `by_username`. |
 
 Links:
-
