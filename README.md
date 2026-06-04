@@ -1,6 +1,22 @@
 `bun run dev`
 will run frontend and backend on this Next JS app
 
+## About
+
+This application is a store administration platform. Store admins can sign in,
+manage their store, add products, view the public store page, and test the
+purchase flow from the storefront.
+
+| Area | Purpose |
+| --- | --- |
+| Dashboard `/` | Home page for authenticated admins. Shows sales analytics, revenue, sales count, product count, and recent sales chart data. |
+| Products `/products` | Admin product management. Store admins can view products, add new products, and edit existing products. |
+| Store page `/[username]` | Public storefront for a store. Users can browse products published by the store admin. |
+| Product purchase page `/[username]/[productId]` | Public product detail and checkout entry point. Users can buy products from the store. |
+| Library `/library` | Authenticated customer library. Products bought by the current user are shown here after purchase. |
+| Sales `/sales` | Admin sales table. Shows users/customers who bought products, including customer details, product name, sale date, status, and price. |
+| Settings `/settings` | Admin settings area for profile/store configuration and connected keys. |
+
 # Convex API backend functions/HOOKS:
 db: schema.ts
 GET:Query: customQuery({args:{}, handler:async(ctx, args)=>{}})
@@ -110,4 +126,5 @@ Important files:
 | `convex/users.ts` | Defines `createUser`, the internal mutation that writes to the `users` table. |
 | `convex/schema.ts` | Defines the `users` table and indexes like `by_clerkId`, `by_email`, and `by_username`. |
 
-Links:
+## TO-DO
+make admin roles for users
