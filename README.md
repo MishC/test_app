@@ -61,6 +61,83 @@ Rule of thumb:
 
 # Clerk&Convex sync via Clerk's webhooks with events
 
-Links:
+Clerk sends webhook events to Convex when something happens in Clerk, for
+example when a user signs up. In this project, the Convex HTTP route is:
 
+```ts
+// convex/http.ts
+http.route({
+  path: "/clerk",
+  method: "POST",
+  handler: onCreateUser,
+});
+```
+
+The handler lives in `convex/clerk.ts`. It receives the Clerk event, verifies it
+with `CLERK_WEBHOOK_SECRET`, reads `event.data`, and then calls an internal
+Convex mutation.
+
+Example from this app:
+
+```ts
+// convex/clerk.ts
+export const onCreateUser = httpAction(async (ctx, request) => {
+  const event = await validateRequest(request);
+  const data = event.data as UserJSON;
+
+  await ctx.runMutation(internal.users.createUser, {
+    clerkId: data.id,
+    username: data.username || "",
+    email: data.email_addresses[0].email_address,
+    name: `${data.first_name} ${data.last_name}`,
+    about: "",
+    logo: data.image_url,
+  });
+
+  return new Response(null, { status: 200 });
+});
+```
+
+That means Clerk sends user data like:
+
+- `data.id` -> saved as `clerkId`
+- `data.username` -> saved as `username`
+- `data.email_addresses[0].email_address` -> saved as `email`
+- `data.first_name` and `data.last_name` -> combined into `name`
+- `data.image_url` -> saved as `logo`
+
+The actual database write happens in `convex/users.ts`:
+
+```ts
+export const createUser = internalMutation({
+  args: {
+    clerkId: v.string(),
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    username: v.optional(v.string()),
+    about: v.optional(v.string()),
+    logo: v.optional(v.string()),
+  },
+  handler: async (ctx, { clerkId, username, email, name, about, logo }) => {
+    return await ctx.db.insert("users", {
+      clerkId,
+      username: username || generateUsername(),
+      email,
+      name,
+      about,
+      logo,
+    });
+  },
+});
+```
+
+Use this webhook flow when Clerk owns the event and Convex needs to sync its
+database. For example, after a Clerk `user.created` event, Convex creates a row
+in the `users` table so the rest of the app can query user profile data by
+`clerkId`.
+
+Use `queryWithUser` or `mutationWithUser` for normal logged-in app actions.
+Use Clerk webhooks for background sync from Clerk to Convex.
+
+Links:
 
