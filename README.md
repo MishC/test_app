@@ -56,10 +56,9 @@ Rule of thumb:
   identity inside Convex through auth, or use `queryWithUser` so the server owns
   the user check.
 
-# Clerk: authentication
-## Clerk backend
+## Server side Clerk authentication
 
-# Clerk&Convex sync via Clerk's webhooks with events
+# Clerk&Convex sync via Clerk's webhooks with events 
 
 Clerk webhooks are used when Clerk owns the event and Convex needs to sync its
 database. Normal app actions should use `queryWithUser` or `mutationWithUser`;
@@ -89,6 +88,18 @@ Clerk user.created event
 -> convex/users.ts:createUser
 -> ctx.db.insert("users", {...})
 ```
+
+`internalMutation` in this flow:
+
+| Concept | Meaning |
+| --- | --- |
+| `internalMutation` | A private Convex mutation. It is server-side only and cannot be called directly from the frontend. |
+| Where it comes from | Import it from `convex/_generated/server`, usually as `import { internalMutation } from "./_generated/server";`. The generated `server.js` / `server.d.ts` files expose Convex builders like `query`, `mutation`, `internalMutation`, and `httpAction`. |
+| Generated internal reference | When you export `createUser` as an `internalMutation` from `convex/users.ts`, Convex generates the callable reference `internal.users.createUser`. |
+| `ctx.runMutation(...)` | This is how one Convex server-side function calls a mutation from another Convex server-side function. The call must use a generated function reference like `internal.users.createUser`. |
+| Clerk example | `ctx.runMutation(internal.users.createUser, {...})` is only one example. Here, `convex/clerk.ts` receives and verifies the Clerk webhook, then calls the private `createUser` mutation to write to the DB. |
+| When to use it | Use it for trusted server-side work that should not be public, like writing a user row after a verified Clerk webhook, syncing Stripe webhook data, or other backend-to-DB writes. |
+| Direct DB write | The actual write is still done inside the mutation handler with `ctx.db.insert`, `ctx.db.patch`, or `ctx.db.delete`. |
 
 Important files:
 
