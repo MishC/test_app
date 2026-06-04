@@ -72,6 +72,30 @@ Rule of thumb:
   identity inside Convex through auth, or use `queryWithUser` so the server owns
   the user check.
 
+## Custom Query List
+
+This project uses `customQuery` from `convex-helpers` to create one protected
+query wrapper: `queryWithUser`.
+
+| Custom query | Defined in | What it adds | Use it when |
+| --- | --- | --- | --- |
+| `queryWithUser` | `convex/utils.ts` | Requires an authenticated Clerk user and adds `ctx.clerkId` to the handler. | The query reads data for the current logged-in user, like dashboard, sales, products, library, or settings. |
+
+Queries currently built with `queryWithUser`:
+
+| Query | File | Purpose |
+| --- | --- | --- |
+| `getCurrentUser` | `convex/utils.ts` | Returns the current authenticated user's Convex user record. |
+| `getUser` | `convex/users.ts` | Returns the current user's profile/settings data. |
+| `getProduct` | `convex/products.ts` | Returns one product only if it belongs to the current user. |
+| `getProducts` | `convex/products.ts` | Returns products owned by the current user, including sales and revenue metadata. |
+| `getDashboardData` | `convex/sales.ts` | Returns dashboard stats and chart sales data for the current store/admin user. |
+| `getDashboardStats` | `convex/sales.ts` | Returns total revenue, total sales, and total products for the current user. |
+| `getDashboardSales` | `convex/sales.ts` | Returns recent sales chart data for the current user. |
+| `getAllSales` | `convex/sales.ts` | Returns all sales for the current store/admin user, including customer and product metadata. |
+| `getLibraryProducts` | `convex/library.ts` | Returns products bought by the current user. |
+| `getLibraryProduct` | `convex/library.ts` | Returns a purchased product only if the current user bought it. |
+
 ## Server side Clerk authentication
 
 # Clerk&Convex sync via Clerk's webhooks with events 
