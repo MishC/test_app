@@ -1,6 +1,6 @@
-import { getSalesByStoreClerkId, getProductsByClerkId, queryWithUser } from "./utils";
+import { getSalesByStoreClerkId, getProductsByClerkId, queryWithUser, getUserByClerkId } from "./utils";
 import { formatPrice } from "../lib/formatPrice"
-import { Doc } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 import dayjs from 'dayjs';
 
 export const getDashboardData = queryWithUser({
@@ -77,4 +77,24 @@ type Args = {
     price: number; currency: string;
 }
 
-
+export const getAllSales = queryWithUser({
+    args: {},
+    handler: async (ctx) => {
+        const sales = await getSalesByStoreClerkId(ctx.db, ctx.clerkId);
+        const salesWithMetaData = await Promise.all(sales.map(async (sale) => {
+            const customer = await getUserByClerkId(ctx.db, sale.customerClerkId);
+            const product = await ctx.db.get("products", sale.productId as Id<"products">);
+            return {
+                ...sale,
+                customerLogo: customer?.logo,
+                customerName: customer?.name,
+                productName: product?.name,
+                customerEmail: customer?.email,
+                status: sale?._creationTime ? "success" : "pending",
+                formattedPrice: formatPrice({ price: sale.price }),
+                date: dayjs(sale._creationTime).format("YYYY-MM-DD HH:mm"),
+            };
+        }));
+        return salesWithMetaData;
+    }
+})

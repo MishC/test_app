@@ -5,6 +5,8 @@ import { ColumnDef } from "@tanstack/react-table"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
+export type PaymentStatus = "pending" | "processing" | "success" | "failed"
+
 export type Payment = {
   customImage: string,
   customerLogo: string, 
@@ -12,7 +14,7 @@ export type Payment = {
   customerName: string,
     date: string,
   price: number,
-  status: "pending" | "processing" | "success" | "failed",
+  status: PaymentStatus,
   productName: string
 }
 
@@ -21,7 +23,6 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "customerName",
     header: "Customer Name",
     cell: ({ row }) => { 
-      const customerName = row.getValue("customerName");
       return <div className="flex gap-3 font-medium items-center"><CustomImage src={row.original.customerLogo} 
       width={60} height={60} size="medium" />
       <span className="font-medium">{row.original.customerName}</span></div>;
