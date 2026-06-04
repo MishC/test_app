@@ -7,7 +7,6 @@ import { action, internalAction } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import type { ActionCtx } from "./_generated/server";
 
-const domain = process.env.HOSTING_URL ?? "http://localhost:3000";
 const MINIMUM_PRODUCT_PRICE_USD = 0.5;
 
 type PayArgs = {
@@ -30,6 +29,11 @@ export const pay = action({
     { runQuery }: ActionCtx,
     { storeClerkId, customerClerkId, productId }: PayArgs,
   ): Promise<string | null> => {
+    const domain = process.env.HOSTING_URL;
+    if (!domain) {
+      throw new Error("Missing HOSTING_URL");
+    }
+
     const product = await runQuery(internal.stripe_utils.getProduct, { productId });
     const store = await runQuery(internal.stripe_utils.getStore, { storeClerkId });
     const storeStripeKey = await runQuery(internal.stripe_utils.getStoreStripeKey, {
