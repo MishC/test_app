@@ -29,9 +29,9 @@ export const pay = action({
     { runQuery }: ActionCtx,
     { storeClerkId, customerClerkId, productId }: PayArgs,
   ): Promise<string | null> => {
-    const domain = process.env.HOSTING_URL;
+    const domain = process.env.HOST_URL ?? process.env.HOSTING_URL;
     if (!domain) {
-      throw new Error("Missing HOSTING_URL");
+      throw new Error("Missing HOST_URL");
     }
 
     const product = await runQuery(internal.stripe_utils.getProduct, { productId });
