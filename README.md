@@ -173,3 +173,32 @@ Rules:
   be updated manually in the Convex dashboard or with a one-off admin mutation.
 - Frontend redirects use `api.users.isAdmin` / `api.users.getPostAuthRedirect`,
   but protected backend functions must still check admin access in Convex.
+
+## TODO: Admin Invitations
+
+Future improvement: create a separate admin table and invite flow for managing
+admins from inside the app.
+
+Possible model:
+
+```ts
+admins: defineTable({
+  userId: v.id("users"),
+  invitedByUserId: v.id("users"),
+  email: v.string(),
+  createdAt: v.number(),
+})
+  .index("by_userId", ["userId"])
+  .index("by_email", ["email"])
+```
+
+Goal:
+
+- Existing admins can invite another user/email to become an admin.
+- Only a current admin can create an admin invitation.
+- Convex checks admin access server-side before creating the invitation.
+- After the invited user signs up, Convex can match their email and grant admin
+  access.
+- This is not needed yet because the current app stores admin access directly in
+  `users.role`, but it is useful when admin management needs to happen through
+  the UI instead of manual env variables or manual dashboard edits.
