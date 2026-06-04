@@ -25,7 +25,10 @@ export const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => { 
       return <div className="flex gap-3 font-medium items-center"><CustomImage src={row.original.customerLogo} 
       width={60} height={60} size="medium" />
-      <span className="font-medium">{row.original.customerName}</span></div>;
+      <div className="flex flex-col">
+      <span className="font-medium">{row.original.customerName}</span>
+            <span className="font-medium">{row.original.customerEmail}</span></div></div>;
+
     },
     },
    {
