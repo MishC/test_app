@@ -112,7 +112,7 @@ export const pay = action({
         currency,
       },
       mode: "payment",
-      success_url: `${domain}/library`,
+      success_url: `${domain}/history`,
       cancel_url: `${domain}/${store.username}/${product._id}`,
     });
 
