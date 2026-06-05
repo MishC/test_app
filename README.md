@@ -18,8 +18,13 @@ purchase flow from the storefront.
 | Settings `/settings` | Admin settings area for profile/store configuration and connected keys. |
 
 # Convex API backend functions/HOOKS:
-db: schema.ts
+
+Start with convex in your project: https://docs.convex.dev/quickstart/nextjs
+
+db: schema.ts 
+
 GET:Query: customQuery({args:{}, handler:async(ctx, args)=>{}})
+
 POST,PUSH:Mutations: internalMutation({args:{}, handler:async(ctx, args)=>{await ctx.db.insert("table", {});}})
 
 ## Convex `query` vs `queryWithUser`
