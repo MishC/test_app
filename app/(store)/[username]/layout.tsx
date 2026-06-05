@@ -1,9 +1,14 @@
-import { StoreLayoutShell } from "./store-layout-shell";
+import { ResizableSidebarLayout } from "@/components/resizable-sidebar-layout";
+import { Sidebar } from "../../(auth)/sidebar";
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function StoreLayout({ children }: Props) {
-  return <StoreLayoutShell>{children}</StoreLayoutShell>;
+  return (
+    <ResizableSidebarLayout sidebar={<Sidebar />}>
+      {children}
+    </ResizableSidebarLayout>
+  );
 }
