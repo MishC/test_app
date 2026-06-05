@@ -32,7 +32,10 @@ export default async function StorePage({ params }: Props) {
 <div className="flex items-center gap-3 max-w-30 rounded-full object-cover">
   <Link href="/" >
   <CustomImage
-    src={store.logo ?? ""}
+    src="public/cart3.png"
+    width={60}
+    height={60}
+    size="medium"
     alt={store.name ?? "Store logo"}
     
   /></Link>
