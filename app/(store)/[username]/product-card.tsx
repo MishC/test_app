@@ -1,18 +1,16 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Doc } from "@/convex/_generated/dataModel";
 import { formatPrice } from "@/lib/formatPrice";
 import Link from "next/link";
-import { Package2, StoreIcon } from "lucide-react";
+import { Package2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -37,12 +35,6 @@ export function ProductCard({ product, store }: Props) {
         <CardDescription className="line-clamp-2">
           {product.description}
         </CardDescription>
-
-        <CardAction>
-          <Badge variant={product.published ? "default" : "outline"}>
-            {product.published ? "Published" : "Draft"}
-          </Badge>
-        </CardAction>
       </CardHeader>
 
       <CardContent className="space-y-4">
