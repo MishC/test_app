@@ -50,6 +50,10 @@ export function BuyButton({ product }: Props) {
     return <Button disabled>Unpublished</Button>;
   }
 
+  if ((product.amount ?? 0) <= 0) {
+    return <Button disabled>Out of stock</Button>;
+  }
+
   if (isLoaded && !user) {
     return (
       <SignInButton>

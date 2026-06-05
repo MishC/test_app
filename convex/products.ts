@@ -13,6 +13,15 @@ import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server";
 
 const MINIMUM_PRODUCT_PRICE_USD = 0.5;
+const MINIMUM_PRODUCT_AMOUNT = 0;
+
+function normalizeProductAmount(amount: number) {
+  if (!Number.isInteger(amount) || amount < MINIMUM_PRODUCT_AMOUNT) {
+    throw new ConvexError("Amount must be a whole number greater than or equal to 0");
+  }
+
+  return amount;
+}
 
 export const getProduct = queryWithUser({
   args: {
@@ -66,16 +75,19 @@ export const createProduct = mutationWithUser({
     coverImage: v.string(),
     content: v.string(),
     published: v.boolean(),
+    amount: v.number(),
   },
   handler: async (
     ctx,
-    { name, description, price, coverImage, content, published }
+    { name, description, price, coverImage, content, published, amount }
   ) => {
     await requireAdmin(ctx.db, ctx.clerkId);
 
     if (price < MINIMUM_PRODUCT_PRICE_USD) {
       throw new ConvexError("Price must be at least $0.50");
     }
+
+    const normalizedAmount = normalizeProductAmount(amount);
 
     await ctx.db.insert("products", {
       clerkId: ctx.clerkId,
@@ -86,6 +98,7 @@ export const createProduct = mutationWithUser({
       coverImage,
       content,
       published,
+      amount: normalizedAmount,
     });
   },
 });
@@ -99,16 +112,19 @@ export const updateProduct = mutationWithUser({
     coverImage: v.string(),
     content: v.string(),
     published: v.boolean(),
+    amount: v.number(),
   },
   handler: async (
     ctx,
-    { productId, name, description, price, coverImage, content, published }
+    { productId, name, description, price, coverImage, content, published, amount }
   ) => {
     await requireAdmin(ctx.db, ctx.clerkId);
 
     if (price < MINIMUM_PRODUCT_PRICE_USD) {
       throw new ConvexError("Price must be at least $0.50");
     }
+
+    const normalizedAmount = normalizeProductAmount(amount);
 
     const product = await ctx.db.get(productId);
 
@@ -125,6 +141,7 @@ export const updateProduct = mutationWithUser({
       coverImage,
       content,
       published,
+      amount: normalizedAmount,
     });
   },
 });

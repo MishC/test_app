@@ -48,6 +48,7 @@ export default function ProductTable({ products }: Props) {
           <TableHead className="hidden md:table-cell">Revenue</TableHead>
 
           <TableHead className="hidden md:table-cell">Price</TableHead>
+          <TableHead className="hidden md:table-cell">Amount</TableHead>
           <TableHead className="hidden md:table-cell">Status</TableHead>
 
           <TableHead className="text-right">
@@ -80,6 +81,9 @@ export default function ProductTable({ products }: Props) {
 
               <TableCell className="hidden md:table-cell">
                 {formatPrice({ price: product.price })}
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {product.amount ?? 0}
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 <Badge variant={product.published ? "default" : "outline"}>

@@ -23,6 +23,7 @@ export default defineSchema({
     currency: v.optional(v.string()),
     coverImage: v.optional(v.string()),
     published: v.boolean(),
+    amount: v.optional(v.number()),
 
   }).index("by_clerkId", ["clerkId"],).index("by_published", ["published"]),
 
@@ -33,7 +34,8 @@ export default defineSchema({
     productId: v.id("products"),
     price: v.number(),
     currency: v.optional(v.string()),
-  }).index("by_storeClerkId", ["storeClerkId"]).index("by_customerClerkId", ["customerClerkId"]).index("by_productId", ["productId"]),
+    stripeSessionId: v.optional(v.string()),
+  }).index("by_storeClerkId", ["storeClerkId"]).index("by_customerClerkId", ["customerClerkId"]).index("by_productId", ["productId"]).index("by_stripeSessionId", ["stripeSessionId"]),
   keys: defineTable({
     clerkId: v.string(),
     stripeKey: v.string(),

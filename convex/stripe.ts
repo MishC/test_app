@@ -71,6 +71,9 @@ export const pay = action({
     if (product.price < MINIMUM_PRODUCT_PRICE_USD) {
       throw new Error("This product is below Stripe's minimum checkout amount of $0.50.");
     }
+    if ((product.amount ?? 0) <= 0) {
+      throw new Error("This product is out of stock.");
+    }
 
     const stripe = new Stripe(normalizedStripeKey);
     const currency = product.currency ?? "USD";
@@ -149,6 +152,7 @@ export const fulfill = internalAction({
         }
 
         await ctx.runMutation(internal.stripe_utils.fulfillPurchase, {
+          stripeSessionId: session.id,
           storeClerkId: metadata.storeClerkId,
           customerClerkId: metadata.customerClerkId,
           productId: metadata.productId as Id<"products">,

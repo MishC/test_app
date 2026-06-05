@@ -66,9 +66,12 @@ return (
        
         <br/>
      <div className="text-sm font-medium sm:divide-y-0 border-zinc-300 grid sm:divide-x 
-    sm:grid-cols-2  divide-zinc-300 border-y">
+    sm:grid-cols-3  divide-zinc-300 border-y">
       <span className="flex items-center sm:justify-center px-4 py-2">
         {formatPrice({price: product.price} )}
+      </span>
+      <span className="flex items-center sm:justify-center px-4 py-2">
+       {(product.amount ?? 0) > 0 ? `${product.amount} available` : "Out of stock"}
       </span>
       <span className="flex items-center sm:justify-center px-4 py-2">
        {product.sales} sales

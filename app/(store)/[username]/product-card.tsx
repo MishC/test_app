@@ -62,6 +62,12 @@ export function ProductCard({ product, store, showStatus = false }: Props) {
           </div>
         )}
 
+        <p className="text-sm text-muted-foreground">
+          {(product.amount ?? 0) > 0
+            ? `${product.amount} available`
+            : "Out of stock"}
+        </p>
+
         <Button asChild size="sm" className="w-full">
           <Link href={`/${store.username}/${product._id}`}>View Product</Link>
         </Button>
@@ -70,13 +76,7 @@ export function ProductCard({ product, store, showStatus = false }: Props) {
       <CardFooter className="flex items-center justify-between border-t bg-muted/30 px-6 py-4">
         <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground"></div>
 
-        <Link
-          href={`/`}
-          className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground"
-        >
-          <Package2 className="size-4 shrink-0" />
-          <span className="truncate"></span>{" "}
-        </Link>
+        
       </CardFooter>
     </Card>
   );

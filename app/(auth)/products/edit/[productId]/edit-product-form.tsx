@@ -28,6 +28,9 @@ const productSchema = z.object({
   price: z.number().min(MINIMUM_PRODUCT_PRICE_USD, {
     message: "Price must be at least $0.50",
   }),
+  amount: z.number().int().min(0, {
+    message: "Amount must be 0 or more",
+  }),
   description: z.string(),
   coverImage: z.string(),
   content: z.string(),
@@ -47,6 +50,7 @@ export function EditProductForm({product}:Props) {
     defaultValues: {
       name: product?.name,
       price: product?.price,
+      amount: product?.amount ?? 0,
       description: product?.description,
       coverImage: product?.coverImage,
       content: product?.content,
@@ -60,7 +64,7 @@ export function EditProductForm({product}:Props) {
   const onSubmit: SubmitHandler<ProductFormValues> = async (
     values: ProductFormValues,
   ) => {
-    await updateProduct({name:values.name, description:values.description, content:values.content, price:values.price,
+    await updateProduct({name:values.name, description:values.description, content:values.content, price:values.price, amount: values.amount,
         coverImage:values.coverImage,published:values.published, productId:product._id 
     } );
     toast.success("Product edited");
@@ -135,7 +139,7 @@ export function EditProductForm({product}:Props) {
           )}
         />
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <Field data-invalid={!!form.formState.errors.name}>
             <FieldLabel htmlFor="name">
               Name <span className="text-destructive">*</span>
@@ -177,6 +181,27 @@ export function EditProductForm({product}:Props) {
 
             {form.formState.errors.price && (
               <FieldError errors={[form.formState.errors.price]} />
+            )}
+          </Field>
+
+          <Field data-invalid={!!form.formState.errors.amount}>
+            <FieldLabel htmlFor="amount">
+              Amount <span className="text-destructive">*</span>
+            </FieldLabel>
+
+            <Input
+              id="amount"
+              type="number"
+              step="1"
+              min={0}
+              placeholder="1"
+              {...form.register("amount", {
+                valueAsNumber: true,
+              })}
+            />
+
+            {form.formState.errors.amount && (
+              <FieldError errors={[form.formState.errors.amount]} />
             )}
           </Field>
         </div>
