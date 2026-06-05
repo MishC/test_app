@@ -9,7 +9,7 @@ type Props={
     params:Promise<{productId:string}>
 }
 
-export default async function LibraryProduct({params}:Props){
+export default async function HistoryProduct({params}:Props){
     const { productId } = await params;
     const token= await getAuthToken();
     if (!token){

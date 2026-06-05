@@ -19,7 +19,7 @@ type Props = {
   product: Doc<"products">;
   store: Doc<"users">;
 };
-export function LibraryCard({product, store}:Props){
+export function HistoryCard({product, store}:Props){
      return (
     <Card className="overflow-hidden transition-shadow hover:shadow-md">
       <CardHeader>
@@ -58,7 +58,7 @@ export function LibraryCard({product, store}:Props){
         )}
 
         <Button asChild size="sm" className="w-full">
-          <Link href={`/library/${product._id}`}>Description</Link>
+          <Link href={`/history/${product._id}`}>Description</Link>
         </Button>
       </CardContent>
 

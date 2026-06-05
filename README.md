@@ -13,7 +13,7 @@ purchase flow from the storefront.
 | Products `/products` | Admin product management. Store admins can view products, add new products, and edit existing products. |
 | Store page `/[username]` | Public storefront for a store. Users can browse products published by the store admin. |
 | Product purchase page `/[username]/[productId]` | Public product detail and checkout entry point. Users can buy products from the store. |
-| Library `/library` | Authenticated customer library. Products bought by the current user are shown here after purchase. |
+| History `/history` | Authenticated customer purchase history. Products bought by the current user are shown here after purchase. |
 | Sales `/sales` | Admin sales table. Shows users/customers who bought products, including customer details, product name, sale date, status, and price. |
 | Settings `/settings` | Admin settings area for profile/store configuration and connected keys. |
 
@@ -71,7 +71,7 @@ Rule of thumb:
 
 - Use `query` for public reads, store pages, product pages, or data that anyone
   is allowed to view.
-- Use `queryWithUser` for dashboard, sales, library, settings, and any read that
+- Use `queryWithUser` for dashboard, sales, history, settings, and any read that
   must be scoped to the current logged-in user.
 - Do not pass `userId` or `clerkId` from the frontend for authorization. Get the
   identity inside Convex through auth, or use `queryWithUser` so the server owns
@@ -84,7 +84,7 @@ query wrapper: `queryWithUser`.
 
 | Custom query | Defined in | What it adds | Use it when |
 | --- | --- | --- | --- |
-| `queryWithUser` | `convex/utils.ts` | Requires an authenticated Clerk user and adds `ctx.clerkId` to the handler. | The query reads data for the current logged-in user, like dashboard, sales, products, library, or settings. |
+| `queryWithUser` | `convex/utils.ts` | Requires an authenticated Clerk user and adds `ctx.clerkId` to the handler. | The query reads data for the current logged-in user, like dashboard, sales, products, history, or settings. |
 
 Queries currently built with `queryWithUser`:
 
@@ -98,7 +98,7 @@ Queries currently built with `queryWithUser`:
 | `getDashboardStats` | `convex/sales.ts` | Returns total revenue, total sales, and total products for the current user. |
 | `getDashboardSales` | `convex/sales.ts` | Returns recent sales chart data for the current user. |
 | `getAllSales` | `convex/sales.ts` | Returns all sales for the current store/admin user, including customer and product metadata. |
-| `getLibraryProducts` | `convex/library.ts` | Returns products bought by the current user. |
+| `getLibraryProducts` | `convex/library.ts` | Returns products in the current user's purchase history. |
 | `getLibraryProduct` | `convex/library.ts` | Returns a purchased product only if the current user bought it. |
 
 ## Server side Clerk authentication

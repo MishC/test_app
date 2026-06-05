@@ -5,7 +5,7 @@ import {
   CreditCard,
   ShoppingBasket,
   Cog,
-  Library,
+  History,
   ChevronUp,
   Store,
 } from "lucide-react";
@@ -46,7 +46,7 @@ export function Sidebar() {
     {
       label: "History",
       href: "/history",
-      icon: Library,
+      icon: History,
     },
     {
       label: "Settings",
