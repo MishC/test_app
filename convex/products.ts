@@ -1,5 +1,6 @@
 import {
   getProductsByClerkId,
+  getPublishedProducts,
   getSalesByProductId,
   getUserByClerkId,
   getUserByUsername,
@@ -156,9 +157,7 @@ export const getStorePage = query({
       };
     }
 
-    const products = (await getProductsByClerkId(ctx.db, store.clerkId)).filter(
-      (product) => product.published
-    );
+    const products = await getPublishedProducts(ctx.db);
 
     return {
       store,

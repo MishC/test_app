@@ -24,7 +24,7 @@ export default defineSchema({
     coverImage: v.optional(v.string()),
     published: v.boolean(),
 
-  }).index("by_clerkId", ["clerkId"],),
+  }).index("by_clerkId", ["clerkId"],).index("by_published", ["published"]),
 
   sales: defineTable({
     storeClerkId: v.string(),

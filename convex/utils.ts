@@ -110,6 +110,13 @@ export const getProductsByClerkId = async (
     .collect();
 };
 
+export const getPublishedProducts = async (db: DatabaseReader) => {
+  return await db
+    .query("products")
+    .withIndex("by_published", (q) => q.eq("published", true))
+    .collect();
+};
+
 export const getSalesByStoreClerkId = async (
   db: DatabaseReader,
   clerkId: string
