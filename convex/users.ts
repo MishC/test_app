@@ -10,6 +10,11 @@ function getAdminEmails() {
     .filter(Boolean);
 }
 
+function getRoleForEmail(email?: string) {
+  const adminEmails = getAdminEmails();
+  return email && adminEmails.includes(email.toLowerCase()) ? "admin" : "customer";
+}
+
 export const getUser = queryWithUser({
   args: {},
   handler: (ctx) => { 
@@ -44,6 +49,55 @@ export const getPostAuthRedirect = queryWithUser({
   },
 });
 
+export const ensureCurrentUser = mutationWithUser({
+  args: {
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    username: v.optional(v.string()),
+    about: v.optional(v.string()),
+    logo: v.optional(v.string()),
+  },
+  handler: async (ctx, { username, email, name, about, logo }) => {
+    const existingUser = await getUserByClerkId(ctx.db, ctx.clerkId);
+
+    if (existingUser) {
+      const isAdmin = existingUser.role === "admin";
+      return {
+        isAdmin,
+        username: existingUser.username ?? null,
+        redirectTo: isAdmin
+          ? "/"
+          : existingUser.username
+            ? `/${existingUser.username}`
+            : "/settings",
+      };
+    }
+
+    const role = getRoleForEmail(email);
+    const userId = await ctx.db.insert("users", {
+      clerkId: ctx.clerkId,
+      username: username || generateUsername(),
+      email,
+      name,
+      about: about ?? "",
+      logo,
+      role,
+    });
+    const createdUser = await ctx.db.get(userId);
+    const isAdmin = role === "admin";
+
+    return {
+      isAdmin,
+      username: createdUser?.username ?? null,
+      redirectTo: isAdmin
+        ? "/"
+        : createdUser?.username
+          ? `/${createdUser.username}`
+          : "/settings",
+    };
+  },
+});
+
 export const createUser = internalMutation({
   args: {
     clerkId: v.string(),
@@ -55,8 +109,13 @@ export const createUser = internalMutation({
 
   },
   handler: async (ctx, { clerkId, username, email, name, about, logo }) => {
-    const adminEmails = getAdminEmails();
-    const role = email && adminEmails.includes(email.toLowerCase()) ? "admin" : "customer";
+    const existingUser = await getUserByClerkId(ctx.db, clerkId);
+
+    if (existingUser) {
+      return existingUser._id;
+    }
+
+    const role = getRoleForEmail(email);
     const userId = await ctx.db.insert("users", {
       clerkId,
       username: username || generateUsername(),

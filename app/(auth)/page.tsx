@@ -1,11 +1,12 @@
 import { ContentLayout } from "./content-layout";
 import { getAuthToken } from "@/lib/getAuthToken";
-import { fetchQuery } from "convex/nextjs";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { DashboardCard } from "./dashboard-card";
 import { Barcode, CreditCard, DollarSign } from "lucide-react";
 import { DashboardSales } from "../dashboard-sales";
 import { redirect } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 
 export default async function DashboardPage() {
   const token=await getAuthToken();
@@ -14,9 +15,24 @@ export default async function DashboardPage() {
   }
   const postAuthRedirect = await fetchQuery(api.users.getPostAuthRedirect, {}, { token });
   if (!postAuthRedirect) {
-    redirect("/settings");
+    const clerkUser = await currentUser();
+    const ensuredUser = await fetchMutation(
+      api.users.ensureCurrentUser,
+      {
+        name: clerkUser?.fullName ?? undefined,
+        email: clerkUser?.primaryEmailAddress?.emailAddress ?? undefined,
+        username: clerkUser?.username ?? undefined,
+        about: "",
+        logo: clerkUser?.imageUrl ?? undefined,
+      },
+      { token },
+    );
+
+    if (ensuredUser.redirectTo !== "/") {
+      redirect(ensuredUser.redirectTo);
+    }
   }
-  if (postAuthRedirect.redirectTo !== "/") {
+  if (postAuthRedirect?.redirectTo && postAuthRedirect.redirectTo !== "/") {
     redirect(postAuthRedirect.redirectTo);
   }
 

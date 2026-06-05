@@ -1,9 +1,10 @@
-import { fetchQuery } from "convex/nextjs"
+import { fetchMutation, fetchQuery } from "convex/nextjs"
 import { ContentLayout } from "../content-layout"
 import { SettingsForm } from "./settings-form"
 import { api } from "@/convex/_generated/api"
 import { getAuthToken } from "@/lib/getAuthToken"
 import { Settings } from "lucide-react"
+import { currentUser } from "@clerk/nextjs/server"
 
 export default async function SettingsPage() {
     const token = await getAuthToken();
@@ -20,7 +21,23 @@ export default async function SettingsPage() {
     }
 
     if (!user) {
-        return <div>User not found</div>;
+        const clerkUser = await currentUser();
+        await fetchMutation(
+            api.users.ensureCurrentUser,
+            {
+                name: clerkUser?.fullName ?? undefined,
+                email: clerkUser?.primaryEmailAddress?.emailAddress ?? undefined,
+                username: clerkUser?.username ?? undefined,
+                about: "",
+                logo: clerkUser?.imageUrl ?? undefined,
+            },
+            { token },
+        );
+        user = await fetchQuery(api.users.getUser, {}, { token });
+    }
+
+    if (!user) {
+        return <div>Unable to create user profile. Please sign in again.</div>;
     }
 
     return (
