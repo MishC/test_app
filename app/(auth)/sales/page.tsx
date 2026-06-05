@@ -24,8 +24,13 @@ async function getData(): Promise<Payment[]> {
     if (!token) {
        redirect("/sign-in");
     }
-    
-      const sales = await fetchQuery(api.sales.getAllSales,{},{token});
+
+    const postAuthRedirect = await fetchQuery(api.users.getPostAuthRedirect, {}, { token });
+    if (!postAuthRedirect?.isAdmin) {
+      redirect(postAuthRedirect?.redirectTo ?? "/settings");
+    }
+
+    const sales = await fetchQuery(api.sales.getAllSales,{},{token});
 
   return sales.map((sale) => ({
     customImage: sale.customerLogo ?? "",

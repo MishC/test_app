@@ -23,6 +23,11 @@ export default async function ProductsPage() {
    if (!token) {
      redirect("/sign-in");
    }
+  const postAuthRedirect = await fetchQuery(api.users.getPostAuthRedirect, {}, { token });
+  if (!postAuthRedirect?.isAdmin) {
+    redirect(postAuthRedirect?.redirectTo ?? "/settings");
+  }
+
   const products=await fetchQuery(api.products.getProducts,{},{token})
 
   return (

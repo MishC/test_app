@@ -36,27 +36,12 @@ export function Sidebar() {
     api.users.getUser,
     isAuthenticated ? {} : "skip",
   );
- 
-  const links = [
-    {
-      label: "Dashboard",
-      href: "/",
-      icon: BarChart,
-    },
-    {
-      label: "Products",
-      href: "/products",
-      icon: ShoppingBasket,
-    },
+  const isAdmin = currentUser?.role === "admin";
+  const customerLinks = [
     {
       label: "Store",
       href: currentUser?.username ? `/${currentUser.username}` : "/settings",
       icon: Store,
-    },
-    {
-      label: "Sales",
-      href: "/sales",
-      icon: CreditCard,
     },
     {
       label: "Library",
@@ -68,8 +53,26 @@ export function Sidebar() {
       href: "/settings",
       icon: Cog,
     },
-    
   ];
+  const adminLinks = [
+    {
+      label: "Dashboard",
+      href: "/",
+      icon: BarChart,
+    },
+    {
+      label: "Products",
+      href: "/products",
+      icon: ShoppingBasket,
+    },
+    ...customerLinks,
+    {
+      label: "Sales",
+      href: "/sales",
+      icon: CreditCard,
+    },
+  ];
+  const links = isAdmin ? adminLinks : customerLinks;
   return (
     <div className="flex flex-col justify-between h-screen">
       <div>
