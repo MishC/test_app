@@ -10,10 +10,13 @@ import { redirect } from "next/navigation";
 export default async function DashboardPage() {
   const token=await getAuthToken();
   if (!token){
-    return ""
+    redirect("/sign-in");
   }
   const postAuthRedirect = await fetchQuery(api.users.getPostAuthRedirect, {}, { token });
-  if (postAuthRedirect?.redirectTo && postAuthRedirect.redirectTo !== "/") {
+  if (!postAuthRedirect) {
+    redirect("/settings");
+  }
+  if (postAuthRedirect.redirectTo !== "/") {
     redirect(postAuthRedirect.redirectTo);
   }
 
