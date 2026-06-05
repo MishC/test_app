@@ -102,27 +102,27 @@ export function Sidebar() {
           ))}
         </nav>
       </div>
-      <div className="flex items-center align-bottom  border-t h-14 px-4 pt-2">
+      <div className="flex h-14 min-w-0 items-center overflow-hidden border-t px-4 pt-2">
         <DropdownMenu>
-          <DropdownMenuTrigger className="outline-none">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-3 items-center">
-                <Avatar>
+          <DropdownMenuTrigger className="min-w-0 flex-1 outline-none">
+            <div className="flex min-w-0 items-center justify-between">
+              <div className="flex min-w-0 items-center gap-3">
+                <Avatar className="shrink-0">
                   <AvatarImage
                     src={user?.imageUrl}
                     alt={user?.fullName || ""}
                   />
                 </Avatar>
-                <div className="flex flex-col item-start-w-[150px] justif-start truncate">
-                  <p className="text-sm font-medium  text-zinc-950">
+                <div className="flex min-w-0 flex-1 flex-col items-start">
+                  <p className="w-full truncate text-left text-sm font-medium text-zinc-950">
                     {user?.fullName}
                   </p>
-                  <p className="text-sm font-normal text-zinc-500">
+                  <p className="w-full truncate text-left text-sm font-normal text-zinc-500">
                     {user?.emailAddresses[0]?.emailAddress}
                   </p>
                 </div>
               </div>
-              <ChevronUp className="size-4 ml-2 text-zinc-500"></ChevronUp>
+              <ChevronUp className="ml-2 size-4 shrink-0 text-zinc-500"></ChevronUp>
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-62.5 mb-4" align="start">
