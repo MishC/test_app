@@ -41,8 +41,12 @@ type Props = {
 const settingsKeySchema = z.object({
   stripeKey: z
     .string()
+    .trim()
     .min(32, {
       message: "Stripe secret key must be at least 32 characters long",
+    })
+    .regex(/^sk_(test|live)_/, {
+      message: "Stripe secret key must start with sk_test_ or sk_live_",
     }),
 });
 

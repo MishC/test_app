@@ -9,6 +9,14 @@ import type { ActionCtx } from "./_generated/server";
 
 const MINIMUM_PRODUCT_PRICE_USD = 0.5;
 
+function normalizeStripeSecretKey(stripeKey: string) {
+  return stripeKey.trim();
+}
+
+function isStripeSecretKey(stripeKey: string) {
+  return stripeKey.startsWith("sk_test_") || stripeKey.startsWith("sk_live_");
+}
+
 type PayArgs = {
   storeClerkId: string;
   customerClerkId: string;
@@ -55,11 +63,16 @@ export const pay = action({
     if (!storeStripeKey) {
       throw new Error("Store doesn't have a Stripe key");
     }
+    const normalizedStripeKey = normalizeStripeSecretKey(storeStripeKey);
+
+    if (!isStripeSecretKey(normalizedStripeKey)) {
+      throw new Error("Store Stripe key must start with sk_test_ or sk_live_.");
+    }
     if (product.price < MINIMUM_PRODUCT_PRICE_USD) {
       throw new Error("This product is below Stripe's minimum checkout amount of $0.50.");
     }
 
-    const stripe = new Stripe(storeStripeKey);
+    const stripe = new Stripe(normalizedStripeKey);
     const currency = product.currency ?? "USD";
 
     const session: Stripe.Checkout.Session = await stripe.checkout.sessions.create({
