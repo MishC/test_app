@@ -74,17 +74,31 @@ export const pay = action({
 
     const stripe = new Stripe(normalizedStripeKey);
     const currency = product.currency ?? "USD";
+    const productName = product.name.trim() || "Product";
+    const productDescription = product.description.trim();
+    const productImage = product.coverImage?.trim();
+    const productData: {
+      name: string;
+      description?: string;
+      images?: string[];
+    } = {
+      name: productName,
+    };
+
+    if (productDescription) {
+      productData.description = productDescription;
+    }
+
+    if (productImage) {
+      productData.images = [productImage];
+    }
 
     const session: Stripe.Checkout.Session = await stripe.checkout.sessions.create({
       line_items: [
         {
           price_data: {
             currency,
-            product_data: {
-              name: product.name,
-              description: product.description,
-              images: product.coverImage ? [product.coverImage] : [],
-            },
+            product_data: productData,
             unit_amount: Math.round(product.price * 100),
           },
           quantity: 1,
