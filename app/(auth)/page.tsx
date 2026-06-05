@@ -5,12 +5,18 @@ import { api } from "@/convex/_generated/api";
 import { DashboardCard } from "./dashboard-card";
 import { Barcode, CreditCard, DollarSign } from "lucide-react";
 import { DashboardSales } from "../dashboard-sales";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const token=await getAuthToken();
   if (!token){
     return ""
   }
+  const postAuthRedirect = await fetchQuery(api.users.getPostAuthRedirect, {}, { token });
+  if (postAuthRedirect?.redirectTo && postAuthRedirect.redirectTo !== "/") {
+    redirect(postAuthRedirect.redirectTo);
+  }
+
   const { stats, sales } = await fetchQuery(api.sales.getDashboardData, {}, { token });
     return (
        <ContentLayout title="Dashboard" description="View all your recent sales and analytics" >
