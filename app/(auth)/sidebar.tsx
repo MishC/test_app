@@ -44,7 +44,7 @@ export function Sidebar() {
       icon: Store,
     },
     {
-      label: "Library",
+      label: "History",
       href: "/library",
       icon: Library,
     },
