@@ -1,6 +1,7 @@
 import { CustomImage } from "@/components/ui/custom-image";
 import { api } from "@/convex/_generated/api"
 import { fetchQuery } from "convex/nextjs"
+import { getAuthToken } from "@/lib/getAuthToken";
 import { StoreIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProductCard } from "./product-card";
@@ -14,11 +15,13 @@ type Props = {
 
 export default async function StorePage({ params }: Props) {
   const { username } = await params;
-  console.log(username);
+  const token = await getAuthToken();
 
-  const { store, products } = await fetchQuery(api.products.getStorePage, {
-    username,
-  });
+  const { store, products, canManageStore } = await fetchQuery(
+    api.products.getStorePage,
+    { username },
+    token ? { token } : undefined
+  );
 
   if (!store) {
     notFound();
@@ -41,7 +44,7 @@ export default async function StorePage({ params }: Props) {
 </div>
             </header>
             <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-3 p-8">
-                {products.map(product=>(<ProductCard key={product._id} store={store} product={product}/>))}
+                {products.map(product=>(<ProductCard key={product._id} store={store} product={product} showStatus={canManageStore && product.clerkId === store.clerkId}/>))}
             </div>
         </div>
         

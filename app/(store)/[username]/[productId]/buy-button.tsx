@@ -46,6 +46,10 @@ export function BuyButton({ product }: Props) {
     }
   }
 
+  if (!product.published) {
+    return <Button disabled>Unpublished</Button>;
+  }
+
   if (isLoaded && !user) {
     return (
       <SignInButton>

@@ -2,15 +2,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Settings } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import toast from "react-hot-toast";
 import { ConvexError } from "convex/values";
 import SettingsLogo from "./settings-logo";
 import { SettingsKey } from "./settings-key";
-import { useConvexAuth } from "convex/react"; //read clerk.md
 import { useState } from "react";
 
 //Data input error handling
@@ -39,9 +37,8 @@ type Props = {
   user: Doc<"users">;
 };
 
-type stripeSecretKey = Doc<"keys">;
-
 export function SettingsForm({ user }: Props) {
+  const isAdmin = user.role === "admin";
   
   //state
   const [isOpen, setOpen] = useState(false);
@@ -53,7 +50,7 @@ export function SettingsForm({ user }: Props) {
 
   const stripeSecretKey = useQuery(
     api.keys.getStripeSecretKey,
-    isAuthenticated ? {} : "skip",
+    isAuthenticated && isAdmin ? {} : "skip",
   );
 
   const {
@@ -156,7 +153,13 @@ export function SettingsForm({ user }: Props) {
           Update Settings
         </button>
       </form>
-      <SettingsKey stripeSecretKey={stripeSecretKey} isOpen={isOpen} setOpen={setOpen} />
+      {isAdmin && (
+        <SettingsKey
+          stripeSecretKey={stripeSecretKey}
+          isOpen={isOpen}
+          setOpen={setOpen}
+        />
+      )}
     </>
   );
 }

@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { fetchQuery } from "convex/nextjs";
+import { getAuthToken } from "@/lib/getAuthToken";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyButton } from "./buy-button";
 import { SignInButton } from "@clerk/nextjs";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { formatPrice } from "@/lib/formatPrice";
 import { StoreIcon } from "lucide-react";
 
@@ -20,10 +21,16 @@ type Props = {
 
 export default async function StoreProductPage({ params }: Props) {
   const { productId, username } = await params;
+  const token = await getAuthToken();
 
-  const product = await fetchQuery(api.products.getStoreProduct, {
-    productId: productId as Id<"products">,
-  });
+  const product = await fetchQuery(
+    api.products.getStoreProduct,
+    {
+      username,
+      productId: productId as Id<"products">,
+    },
+    token ? { token } : undefined
+  );
 
   if (!product) {
     notFound();

@@ -2,6 +2,7 @@ import {
   getProductsByClerkId,
   getPublishedProducts,
   getSalesByProductId,
+  getClerkIdOrNull,
   getUserByClerkId,
   getUserByUsername,
   mutationWithUser,
@@ -128,6 +129,28 @@ export const updateProduct = mutationWithUser({
   },
 });
 
+export const setProductPublished = mutationWithUser({
+  args: {
+    productId: v.id("products"),
+    published: v.boolean(),
+  },
+  handler: async (ctx, { productId, published }) => {
+    await requireAdmin(ctx.db, ctx.clerkId);
+
+    const product = await ctx.db.get(productId);
+
+    if (!product) {
+      throw new ConvexError("Product not found");
+    }
+
+    if (ctx.clerkId !== product.clerkId) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    await ctx.db.patch(productId, { published });
+  },
+});
+
 export const deleteProduct = mutationWithUser({
   args: { productId: v.id("products") },
   handler: async (ctx, { productId }) => {
@@ -157,21 +180,61 @@ export const getStorePage = query({
       };
     }
 
-    const products = await getPublishedProducts(ctx.db);
+    const clerkId = await getClerkIdOrNull(ctx);
+    const currentUser = clerkId
+      ? await getUserByClerkId(ctx.db, clerkId)
+      : null;
+    const canManageStore =
+      currentUser?.role === "admin" && currentUser.clerkId === store.clerkId;
+
+    const publishedProducts = await getPublishedProducts(ctx.db);
+    const products = canManageStore
+      ? [
+          ...new Map(
+            [
+              ...publishedProducts,
+              ...(await getProductsByClerkId(ctx.db, store.clerkId)),
+            ].map((product) => [product._id, product])
+          ).values(),
+        ]
+      : publishedProducts;
 
     return {
       store,
       products,
+      canManageStore,
     };
   },
 });
 
 export const getStoreProduct = query({
-  args: { productId: v.id("products") },
-  handler: async (ctx, { productId }) => {
+  args: {
+    username: v.string(),
+    productId: v.id("products"),
+  },
+  handler: async (ctx, { username, productId }) => {
+    const store = await getUserByUsername(ctx.db, username);
+
+    if (!store) {
+      return null;
+    }
+
     const product = await ctx.db.get(productId);
 
-    if (!product || !product.published) {
+    if (!product) {
+      return null;
+    }
+
+    const clerkId = await getClerkIdOrNull(ctx);
+    const currentUser = clerkId
+      ? await getUserByClerkId(ctx.db, clerkId)
+      : null;
+    const canManageProduct =
+      currentUser?.role === "admin" &&
+      currentUser.clerkId === store.clerkId &&
+      currentUser.clerkId === product.clerkId;
+
+    if (!product.published && !canManageProduct) {
       return null;
     }
 
