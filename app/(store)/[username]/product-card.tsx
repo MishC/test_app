@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,13 +13,15 @@ import { formatPrice } from "@/lib/formatPrice";
 import Link from "next/link";
 import { Package2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ProductStatusBadge } from "./product-status-badge";
 
 type Props = {
   product: Doc<"products">;
   store: Doc<"users">;
+  showStatus?: boolean;
 };
 
-export function ProductCard({ product, store }: Props) {
+export function ProductCard({ product, store, showStatus = false }: Props) {
   return (
     <Card className="overflow-hidden transition-shadow hover:shadow-md">
       <CardHeader>
@@ -35,6 +38,15 @@ export function ProductCard({ product, store }: Props) {
         <CardDescription className="line-clamp-2">
           {product.description}
         </CardDescription>
+
+        {showStatus && (
+          <CardAction>
+            <ProductStatusBadge
+              productId={product._id}
+              published={product.published}
+            />
+          </CardAction>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-4">
