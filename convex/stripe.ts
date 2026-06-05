@@ -43,6 +43,12 @@ export const pay = action({
     if (!product) {
       throw new Error("Product not found");
     }
+    if (!product.published) {
+      throw new Error("This product is not published.");
+    }
+    if (product.clerkId !== storeClerkId) {
+      throw new Error("Store does not own this product.");
+    }
     if (!store?.username) {
       throw new Error("Store not found");
     }
