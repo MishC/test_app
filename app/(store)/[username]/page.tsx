@@ -32,7 +32,7 @@ export default async function StorePage({ params }: Props) {
 <div className="flex items-center gap-3 max-w-30 rounded-full object-cover">
   <Link href="/" >
   <CustomImage
-    src="public/cart3.png"
+    src="../public/cart3.png"
     width={60}
     height={60}
     size="medium"
@@ -42,7 +42,7 @@ export default async function StorePage({ params }: Props) {
 </div>
 
 <div className="flex items-center gap-3">
-    <StoreIcon/>
+    <StoreIcon size={24}/>
     <span className="font-semibold">{products.length} Product{products.length===1?"":"s"}</span>
 </div>
             </header>
